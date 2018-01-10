@@ -24,7 +24,7 @@ import java.util.List;
 @Transactional
 public class InitializerImpl implements Initializer {
 
-    private LocalDateTime currentTime = LocalDateTime.now();
+    private LocalDateTime currentTime = LocalDateTime.now().plus(1, ChronoUnit.HOURS);
 
     @Inject
     private CarService carService;

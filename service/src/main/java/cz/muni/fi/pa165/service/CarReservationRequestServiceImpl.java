@@ -138,6 +138,12 @@ public class CarReservationRequestServiceImpl implements CarReservationRequestSe
         else if (newRequest.getReservationEndDate() == null) {
             errors.add(CarReservationRequestOperationErrorCode.END_DATE_REQUIRED);
         }
+        else if (newRequest.getReservationEndDate().isBefore(newRequest.getReservationStartDate())){
+            errors.add(CarReservationRequestOperationErrorCode.END_DATE_BEFORE_START_DATE);
+        }
+        else if (newRequest.getReservationStartDate().isBefore(timeService.getCurrentTime())) {
+            errors.add(CarReservationRequestOperationErrorCode.RESERVATION_IN_THE_PAST);
+        }
         if (errors.isEmpty()) {
             List<CarReservationRequest> overlappedReservations = requestsDao.findAllOverlappedReservations(
                     newRequest.getReservationStartDate(),

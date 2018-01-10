@@ -107,6 +107,9 @@ public class CarReservationRequestServiceTest extends BaseServiceTest {
         when(carDao.findOne(2L))
                 .thenReturn(car2);
 
+        when(timeService.getCurrentTime())
+                .thenReturn(currentTime);
+
         doAnswer((Answer<Object>) (InvocationOnMock invocation) -> {
             Object argument = invocation.getArguments()[0];
             if (argument == null) {
