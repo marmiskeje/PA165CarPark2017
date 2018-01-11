@@ -15,4 +15,14 @@ public class UserOperationResult extends ResultWithData<UserDTO> {
     public Set<UserOperationErrorCode> getErrorCodes() {
         return errorCodes;
     }
+
+    private String token = null;
+
+    public String getToken() {
+        return token;
+    }
+
+    public String setToken(String token) {
+        return this.token = token;
+    }
 }
