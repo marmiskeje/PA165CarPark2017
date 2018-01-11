@@ -57,13 +57,15 @@ Web.Services.BranchesService = function ($http) {
         var urlBranch = urlBase.concat("/branch");     
     	var response = {};
     	var name = request.name;
+        var cars = JSON.parse(JSON.stringify(request.cars, this.replacer));
+        var employees = JSON.parse(JSON.stringify(request.employees, this.replacer));
     	var req = {
                     method: 'POST',
                     url: urlBranch,
                     headers: {
                       'Content-Type': 'application/json'
                     },
-                    data: {name}
+                    data: {name, cars, employees}
 		}
     	
     	$http(req)
@@ -83,7 +85,8 @@ Web.Services.BranchesService = function ($http) {
     	var response = {};
     	var name = request.name;
         var id = request.id;
-        //var cars = JSON.parse(JSON.stringify(request.cars, this.replacer));
+        var cars = JSON.parse(JSON.stringify(request.cars, this.replacer));
+        var employees = JSON.parse(JSON.stringify(request.employees, this.replacer));
         
     	var req = {
                     method: 'PUT',
@@ -91,7 +94,7 @@ Web.Services.BranchesService = function ($http) {
                     headers: {
                       'Content-Type': 'application/json'
                     },
-                    data: {id, name/*, cars*/}
+                    data: {id, name, cars}
 		}
     	
     	$http(req)
@@ -155,7 +158,7 @@ Web.Services.BranchesService = function ($http) {
                 response.data = httpResponse;
                 response.data.isSuccess = false;
                 error(response);
-		    });
+            });
     }
     
     this.replacer = function replacer(key,value) {

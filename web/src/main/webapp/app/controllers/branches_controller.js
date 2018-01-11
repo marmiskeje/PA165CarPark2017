@@ -35,15 +35,15 @@ Web.Controllers.BranchesController = function ($rootScope, $scope, $http, $mdDia
                         $scope.viewModel.users.push(toAdd);
                     }
                 } else {
-                    notificationsService.showSimple("RESERVATIONS.UNKNOWN_ERROR");
+                    notificationsService.showSimple("USERS.UNKNOWN_ERROR");
                 }
             } else {
-                notificationsService.showSimple("RESERVATIONS.UNKNOWN_ERROR");
+                notificationsService.showSimple("USERS.UNKNOWN_ERROR");
             }
             $scope.viewModel.selectedEvent = null;
         }, function (httpResponse) {
             $scope.viewModel.selectedEvent = null;
-            notificationsService.showSimple("RESERVATIONS.UNKNOWN_SERVER_ERROR");
+            notificationsService.showSimple("USERS.UNKNOWN_SERVER_ERROR");
         });
         var request = new Web.Data.GetCarsRequest(sessionManager);
         if(sessionManager.currentSession.userType == 'ADMIN'){
@@ -62,13 +62,13 @@ Web.Controllers.BranchesController = function ($rootScope, $scope, $http, $mdDia
                         }
                         //callback(cars);
                     } else {
-                        notificationsService.showSimple("RESERVATIONS.UNKNOWN_ERROR");
+                        notificationsService.showSimple("CARS.UNKNOWN_ERROR");
                     }
                 } else {
-                    notificationsService.showSimple("RESERVATIONS.UNKNOWN_ERROR");
+                    notificationsService.showSimple("CARS.UNKNOWN_ERROR");
                 }
             }, function (httpResponse) {
-                notificationsService.showSimple("RESERVATIONS.UNKNOWN_SERVER_ERROR");
+                notificationsService.showSimple("CARS.UNKNOWN_SERVER_ERROR");
         });
     }
 
@@ -152,7 +152,6 @@ Web.Controllers.BranchesController = function ($rootScope, $scope, $http, $mdDia
             } else {
                 notificationsService.showSimple("BRANCHES.UNKNOWN_ERROR");
             }
-            $scope.$digest();
         }, function (httpResponse) {
             notificationsService.showSimple("BRANCHES.UNKNOWN_SERVER_ERROR");
         });
@@ -176,7 +175,6 @@ Web.Controllers.BranchesController = function ($rootScope, $scope, $http, $mdDia
             } else {
                 notificationsService.showSimple("BRANCHES.UNKNOWN_ERROR");
             }
-            $scope.$digest();
         }, function (httpResponse) {
             notificationsService.showSimple("BRANCHES.UNKNOWN_SERVER_ERROR");
         });
@@ -189,7 +187,7 @@ Web.Controllers.BranchesController = function ($rootScope, $scope, $http, $mdDia
         angular.forEach($scope.viewModel.cars, function(car){
             if (car.selected) selectedCars.push(car);
         })*/
-        var managerToSet = $scope.viewModel.manager;
+        /*var managerToSet = $scope.viewModel.manager;
         var request = {name: $scope.viewModel.addBranch.name};
         branchesService.createBranch(request, function (httpResponse) {
             var response = httpResponse.data;
@@ -217,6 +215,42 @@ Web.Controllers.BranchesController = function ($rootScope, $scope, $http, $mdDia
             }
         }, function (httpResponse) {
             notificationsService.showSimple("BRANCHES.UNKNOWN_SERVER_ERROR");
+        });*/
+        var managerToSet = $scope.viewModel.selectedItem.manager;
+        var selectedCars = [];
+        var employees = [];
+        employees.push(managerToSet);
+        angular.forEach($scope.viewModel.cars, function(car){
+            if (car.selected) selectedCars.push(car);
+        })
+        var request = {id: $scope.viewModel.addBranch.id, name: $scope.viewModel.addBranch.name, cars: selectedCars, employees: employees};
+        branchesService.createBranch(request, function (httpResponse) {
+            var response = httpResponse.data;
+            if (response !== null) {
+                var data = response.data;
+                if (response.isSuccess && data !== null) {
+                    $scope.viewModel.branches.push(data.data);
+                    /*angular.forEach($scope.viewModel.branches, function(branch){
+                        if (branch.id === $scope.viewModel.selectedItem.id) {
+                            branch.cars = [];
+                            branch.manager = managerToSet;
+                            
+                        angular.forEach($scope.viewModel.cars, function(car){
+                            if (car.selected) {
+                                branch.cars.push(car);
+                            };
+                        });
+                        $scope.viewModel.selectedItem = branch;
+                        }   
+                    });*/
+                } else {
+                    notificationsService.showSimple("BRANCHES.UNKNOWN_ERROR");
+                }
+            } else {
+                notificationsService.showSimple("BRANCHES.UNKNOWN_ERROR");
+            }
+        }, function (httpResponse) {
+            notificationsService.showSimple("BRANCHES.UNKNOWN_SERVER_ERROR");
         });
         $scope.viewModel.addBranch = null;
         $scope.viewModel.manager = null;
@@ -226,30 +260,32 @@ Web.Controllers.BranchesController = function ($rootScope, $scope, $http, $mdDia
     }
     
     $scope.actions.updateBranch = function () {
-        var managerToSet = $scope.viewModel.manager;
+        var managerToSet = $scope.viewModel.selectedItem.manager;
         var selectedCars = [];
+        var employees = [];
+        employees.push(managerToSet);
         angular.forEach($scope.viewModel.cars, function(car){
             if (car.selected) selectedCars.push(car);
         })
-        var request = {id: $scope.viewModel.addBranch.id, name: $scope.viewModel.addBranch.name, cars: selectedCars};
+        var request = {id: $scope.viewModel.addBranch.id, name: $scope.viewModel.addBranch.name, cars: selectedCars, employees: employees};
         branchesService.updateBranch(request, function (httpResponse) {
             var response = httpResponse.data;
             if (response !== null) {
                 var data = response.data;
                 if (response.isSuccess && data !== null) {
-                    /*angular.forEach($scope.viewModel.cars, function(car){
-                        if (car.selected) {
-                            $scope.viewModel.selectedItem = data.data;
-                            $scope.viewModel.carToAssign = car;
-                            $scope.actions.assignCar();
-                            data.data.cars.push(car);
-                        };
-                    })
-                    $scope.viewModel.selectedItem = data.data;
-                    $scope.viewModel.userToAssign = managerToSet;
-                    data.data.employees.push(managerToSet);
-                    $scope.actions.assignUser();*/
-                    //$scope.viewModel.branches.push(data.data);
+                    angular.forEach($scope.viewModel.branches, function(branch){
+                        if (branch.id === $scope.viewModel.selectedItem.id) {
+                            branch.cars = [];
+                            branch.manager = managerToSet;
+                            
+                        angular.forEach($scope.viewModel.cars, function(car){
+                            if (car.selected) {
+                                branch.cars.push(car);
+                            };
+                        });
+                        $scope.viewModel.selectedItem = branch;
+                        }   
+                    });
                 } else {
                     notificationsService.showSimple("BRANCHES.UNKNOWN_ERROR");
                 }
@@ -298,7 +334,10 @@ Web.Controllers.BranchesController = function ($rootScope, $scope, $http, $mdDia
                 if (car.id === itemCar.id) car.selected = true;
             })
         })
-        $scope.viewModel.manager = item.manager;
+        angular.forEach(item.employees, function(employee){
+            if (employee.userType === "BRANCH_MANAGER") 
+                $scope.viewModel.selectedItem.manager = employee;
+        })
     }
     
     $rootScope.pageSubtitle = "BRANCHES.PAGE_SUBTITLE";

@@ -25,9 +25,9 @@
             <br />
             <div class="container-fluid command-menu" ng-show="viewModel.selectedItem != null">
                 <h3>Selected item actions:</h3>
-                <ul class="nav navbar-nav">
+                <!--<ul class="nav navbar-nav">
                     <li ng-click="actions.deleteSelectedRegionalBranch()">Remove selected branch</li>
-                </ul>
+                </ul>-->
                 <ul class="nav navbar-nav">
                     <li ng-click="actions.editSelectedBranch($event)">Edit selected branch</li>
                 </ul>
@@ -35,7 +35,7 @@
                     <li ng-click="actions.openAssignCar($event)">Assign car</li>
                 </ul>
                 <ul class="nav navbar-nav">
-                    <li ng-click="actions.openAssignUser($event)">Assign user</li>
+                    <li ng-click="actions.openAssignUser($event)">Assign employee</li>
                 </ul>
             </div>
         </div>
@@ -68,7 +68,7 @@
                                 <div layout-gt-sm="row">
                                     <md-input-container class="md-block">
                                         <label>Manager</label>
-                                        <md-select id="manager" ng-model="viewModel.manager" required ng-selected="viewModel.manager">
+                                        <md-select id="manager" ng-model="viewModel.selectedItem.manager" required ng-selected="viewModel.selectedItem.manager">
                                             <md-option ng-repeat="user in viewModel.users" ng-value="user" ng-disabled="user.userType !== 'BRANCH_MANAGER'">
                                                 {{user.name}}
                                             </md-option>

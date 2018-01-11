@@ -13,6 +13,8 @@
         result.title = this.regionalBranch.name;
         result.source = this;
         result.cars = this.cars;
+        result.employees = this.employees;
+        result.manager = this.employees[0];
         return result;
     };
 };
