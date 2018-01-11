@@ -11,7 +11,8 @@
     "DELETE_SUCCESS": "Car was successfully deleted.",
     "DELETE_FAIL": "An unknown error ocurred.",
     "NEW_CREATED": "New car was sucessfully created.",
-    "UNKNOWN_ERROR": "An unknown error occured."
+    "UNKNOWN_ERROR": "An unknown error occured.",
+    "EDIT_SUCCESS": "Car was successfully edited."
 
   },
   "BRANCHES": {
