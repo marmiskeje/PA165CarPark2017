@@ -49,16 +49,26 @@
         });
     }
 
-    this.editSelectedCar = function(id, onSuccess, onError){
-        $http.update(urlBase.concat("/car/" + id)).then(function(httpResponse){
-            if (httpResponse.status === 200){
-                onSuccess();
+    this.editSelectedCar = function(data, onSuccess, onError) {
+        var req = {
+            method: 'PUT',
+            url: urlBase.concat("/car"),
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: data
+        }
+
+        $http(req).then(function (httpResponse) {
+            if (httpResponse.status === 200) {
+                onSuccess(httpResponse.data.isSuccess, httpResponse.data.errorCodes);
             } else {
-                onError();
+                onError(["CARS.UNKNOWN_ERROR"]);
             }
-        }, function(httpResponse){
-            onError();
+        }, function (httpResponse) {
+            onError(["CARS.UNKNOWN_ERROR"]);
         });
     }
+
 }
 Web.App.service('carsService', ['$http', Web.Services.CarsService]);

@@ -66,17 +66,36 @@
         $mdDialog.cancel();
     }
 
-    $scope.actions.editSelectedCar = function (ev) {
-        $scope.viewModel.addCar = $scope.viewModel.selectedItem;
+    $scope.actions.showEditCarDialog = function (ev) {
+        $scope.viewModel.editCar = $scope.viewModel.selectedItem;
         $mdDialog.show({
-            contentElement: '#addCarDialog',
+            contentElement: '#editCarDialog',
             parent: angular.element(document.body),
             targetEvent: ev,
             clickOutsideToClose: true
         });
+    };
+
+    $scope.actions.editCar = function () {
+        carsService.editSelectedCar($scope.viewModel.editCar
+            , function(isSuccess, errors){
+                if (isSuccess){
+                    notificationsService.showSimple("CARS.EDIT_SUCCESS");
+                } else {
+                    notificationsService.showSimple("CARS.UNKNOWN_ERROR");
+                }
+            },function(errors){
+                notificationsService.showSimple("CARS.UNKNOWN_ERROR");
+            });
+        $scope.viewModel.editCar = null;
+        $mdDialog.cancel();
     }
 
     $scope.actions.cancelAddCar = function () {
+        $mdDialog.cancel();
+    }
+
+    $scope.actions.cancelEditCar = function () {
         $mdDialog.cancel();
     }
 
@@ -90,6 +109,7 @@
     $scope.viewModel.cars = [];
     $scope.viewModel.selectedItem = null;
     $scope.viewModel.addCar = null;
+    $scope.viewModel.editCar = null;
     initList();
 }
 
