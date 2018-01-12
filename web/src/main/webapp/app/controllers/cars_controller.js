@@ -32,6 +32,7 @@
         if ($scope.viewModel.selectedItem != null) {
             carsService.deleteCar($scope.viewModel.selectedItem.id, function(){
                 $scope.viewModel.selectedItem = null;
+                initList();
                 notificationsService.showSimple("CARS.DELETE_SUCCESS");
             }, function(){
                 notificationsService.showSimple("CARS.DELETE_FAIL");
@@ -80,6 +81,7 @@
         carsService.editSelectedCar($scope.viewModel.editCar
             , function(isSuccess, errors){
                 if (isSuccess){
+                    initList();
                     notificationsService.showSimple("CARS.EDIT_SUCCESS");
                 } else {
                     notificationsService.showSimple("CARS.UNKNOWN_ERROR");
