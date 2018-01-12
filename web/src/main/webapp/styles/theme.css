@@ -26,3 +26,27 @@
 .command-menu ul li:hover {
     text-decoration: underline;
 }
+
+.nice-list-view ul {
+    padding: 0;
+    list-style-type: none;
+    margin-right: 10px;
+}
+
+.nice-list-view ul li {
+    padding-left: 10px;
+    background-color: #fffcee;
+}
+
+.nice-list-view ul li:nth-of-type(2n+1) {
+    background-color: #d2ebff;
+}
+
+.list-view-item-selected {
+    background-color: #91c4fa !important;
+}
+
+.nice-list-view ul li:hover {
+    cursor: pointer;
+    background-color: #81bcfb;
+}

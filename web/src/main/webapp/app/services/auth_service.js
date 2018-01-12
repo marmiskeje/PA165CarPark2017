@@ -10,12 +10,11 @@
         $http(req).then(function (httpResponse) {
             response.data = httpResponse;
             response.data.isSuccess = true;
-            response.data.token = "testToken"; //TODO
             onSuccess(response);
         }, function(httpResponse) {
             response.data = httpResponse;
             response.data.isSuccess = false;
-            error(response);
+            onError(response);
         });
     }
 

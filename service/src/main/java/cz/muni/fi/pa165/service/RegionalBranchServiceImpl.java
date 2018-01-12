@@ -49,10 +49,41 @@ public class RegionalBranchServiceImpl implements RegionalBranchService {
             throw new IllegalArgumentException("regionalBranch argument is null");
         }
         Set<RegionalBranchOperationErrorCode> errors = new HashSet<>();
-        regionalBranch.setCreationDate(timeService.getCurrentTime());
-        regionalBranch.setModificationDate(timeService.getCurrentTime());
+        RegionalBranch branchToSave = new RegionalBranch();
+        branchToSave.setName(regionalBranch.getName());
+        if(regionalBranch.getParent()!=null){
+            branchToSave.setParent(regionalBranch.getParent());
+        }
+        branchToSave.setCreationDate(timeService.getCurrentTime());
+        branchToSave.setModificationDate(timeService.getCurrentTime());
+
+        regionalBranch.getCars().forEach(item ->{
+            Car foundCar = carDao.findOne(item.getId());
+            if(foundCar.getRegionalBranch()==null||foundCar.getRegionalBranch().equals(regionalBranch)){
+                branchToSave.addCar(foundCar);
+            }else{
+                RegionalBranch old = foundCar.getRegionalBranch();
+                old.removeCar(foundCar);
+                regionalBranchDao.save(old);
+                branchToSave.addCar(foundCar);
+            }
+        });
+
+        regionalBranch.getEmployees().forEach(item -> {
+            User foundEmployee = userDao.findOne(item.getId());
+            if(foundEmployee.getRegionalBranch()==null || foundEmployee.getRegionalBranch().equals(regionalBranch)){
+                branchToSave.addEmployee(foundEmployee);
+            }else{
+                RegionalBranch old = foundEmployee.getRegionalBranch();
+                old.removeEmployee(foundEmployee);
+                regionalBranchDao.save(old);
+                branchToSave.addEmployee(foundEmployee);
+            }
+        });
+
         try{
-            regionalBranchDao.save(regionalBranch);
+            regionalBranchDao.save(branchToSave);
+            regionalBranch.setId(branchToSave.getId());
         }catch (DataAccessException ex) {
             errors.add(RegionalBranchOperationErrorCode.DATABASE_ERROR);
             log.error(ex.toString());
@@ -76,21 +107,39 @@ public class RegionalBranchServiceImpl implements RegionalBranchService {
         try{
             existingBranch.setName(regionalBranch.getName());
             existingBranch.setParent(regionalBranch.getParent());
-            List<Car> oldCar = existingBranch.getCars();
-            regionalBranch.getCars().stream()
-                    .filter(item -> !oldCar.contains(item))
-                    .forEach(item -> existingBranch.addCar(item))
-            ;
-            List<User> oldEmployees = existingBranch.getEmployees();
-            regionalBranch.getEmployees().stream()
-                    .filter(item -> !oldEmployees.contains(item))
-                    .forEach(item -> existingBranch.addEmployee(item))
-            ;
+
+            existingBranch.removeAllCars();
+            regionalBranch.getCars().forEach(item ->{
+                Car foundCar = carDao.findOne(item.getId());
+                if(foundCar.getRegionalBranch()==null || foundCar.getRegionalBranch().getId() == existingBranch.getId()){
+                    existingBranch.addCar(foundCar);
+                }else{
+                    RegionalBranch old = foundCar.getRegionalBranch();
+                    old.removeCar(foundCar);
+                    regionalBranchDao.save(old);
+                    existingBranch.addCar(foundCar);
+                }
+            });
+
+            existingBranch.removeAllEmployees();
+            regionalBranch.getEmployees().forEach(item -> {
+                User foundEmployee = userDao.findOne(item.getId());
+                if(foundEmployee.getRegionalBranch()==null || foundEmployee.getRegionalBranch().getId() == existingBranch.getId()){
+                    existingBranch.addEmployee(foundEmployee);
+                }else{
+                    RegionalBranch old = foundEmployee.getRegionalBranch();
+                    old.removeEmployee(foundEmployee);
+                    regionalBranchDao.save(old);
+                    existingBranch.addEmployee(foundEmployee);
+                }
+            });
+
             List<RegionalBranch> oldChildren = existingBranch.getChildren();
             regionalBranch.getChildren().stream()
                     .filter(item -> !oldChildren.contains(item))
                     .forEach(item -> existingBranch.addChild(item))
             ;
+
             existingBranch.setModificationDate(timeService.getCurrentTime());
             regionalBranchDao.save(existingBranch);
         }catch (DataAccessException ex) {

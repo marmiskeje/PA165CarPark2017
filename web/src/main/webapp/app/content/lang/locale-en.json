@@ -45,6 +45,9 @@
     "NEW_CREATED": "New reservation was sucessfully created.",
     "END_DATE_BEFORE_START_DATE": "End date is set before start date",
     "RESERVATION_IN_THE_PAST": "It is not allowed to add reservation to the past",
-    "UNKNOWN_SERVER_ERROR": "A server error occured. Try later."
+    "UNKNOWN_SERVER_ERROR": "A server error occured. Try later.",
+    "UPDATED": "Reservation was successfully updated.",
+    "APPROVED": "Reservation was successfully approved.",
+    "DENIED": "Reservation was successfully denied."
   }
 }

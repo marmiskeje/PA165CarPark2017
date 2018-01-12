@@ -42,9 +42,13 @@ curl -X DELETE http://localhost:8080/pa165/rest/car/1
 
 # Reservation
 
-Get all reservations: 
+Get all reservations without denied: 
 ```
 curl -X GET http://localhost:8080/pa165/rest/reservation
+```
+Get all reservations with denied: 
+```
+curl -X GET http://localhost:8080/pa165/rest/reservation?ignoreDenied=false
 ```
 Find reservation by ID: 
 ```
@@ -99,7 +103,7 @@ data:
 }
 ```
 
-Find all reservation for particular branch and children (add children param to true, default is set to false): 
+Find all reservation for particular branch and children (add children param to true, default is set to false) except denied: 
 ```
 curl -X POST -i -H "Content-Type: application/json" --data ' http://localhost:8080/pa165/rest/reservation/1?children=true
 data: 
@@ -108,7 +112,17 @@ data:
     "end" : "2017-12-19T20:37:52.862"
 }
 ```
-Find all reservation for particular user: 
+Find all reservation for particular branch (id is as parameter, time period is in the json) with denied: 
+```
+curl -X POST -i -H "Content-Type: application/json" --data ' http://localhost:8080/pa165/rest/reservation/1?ignoreDenied=false
+data: 
+{
+    "start" : "2017-12-18T20:37:52.862",
+    "end" : "2017-12-19T20:37:52.862"
+}
+
+```
+Find all reservation for particular user except denied:
 ```
 curl -X POST -i -H "Content-Type: application/json" --data ' http://localhost:8080/pa165/rest/reservation/1/user/3
 data: 
@@ -117,7 +131,15 @@ data:
     "end" : "2017-12-19T20:37:52.862"
 }
 ```
-
+Find all reservation for particular user with denied:
+```
+    curl -X POST -i -H "Content-Type: application/json" --data ' http://localhost:8080/pa165/rest/reservation/1/user/3?ignoreDenied=false
+    data: 
+    {
+        "start" : "2017-12-18T20:37:52.862",
+        "end" : "2017-12-19T20:37:52.862"
+    }
+```
 # Branch
 
 Get all branches: 

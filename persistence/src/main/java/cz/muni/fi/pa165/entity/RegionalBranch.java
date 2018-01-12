@@ -99,6 +99,10 @@ public class RegionalBranch {
         employee.setRegionalBranch(null);
     }
 
+    public void removeAllEmployees(){
+        this.employees.clear();
+    }
+
     public List<Car> getCars() {
         return Collections.unmodifiableList(this.cars);
     }
@@ -117,8 +121,12 @@ public class RegionalBranch {
             throw new IllegalArgumentException("You cannot remove null car");
         if (!this.cars.contains(car))
             throw new IllegalArgumentException("This branch does not contain this car!");
-        this.cars.add(car);
+        this.cars.remove(car);
         car.setRegionalBranch(null);
+    }
+
+    public void removeAllCars(){
+        this.cars.clear();
     }
 
     public LocalDateTime getCreationDate() {

@@ -1,7 +1,7 @@
 ﻿<div class="container-fluid h-100">
     <div class="row align-items-center" style="min-height: 3em">
         <div class="col">
-            <!-- here may be some filtering -->
+            <h3>{{pageSubtitle | translate}}</h3><!-- here may be some filtering -->
         </div>
     </div>
     <div class="row h-100">
@@ -21,6 +21,10 @@
                 <h3>Selected item actions:</h3>
                 <ul class="nav navbar-nav">
                     <li ng-click="actions.deleteSelectedReservation()">Delete reservation</li>
+                </ul>
+                <ul ng-show="viewModel.selectedEvent.state !== 'APPROVED' && (services.sessionManager.currentSession.userType == 'ADMIN' || services.sessionManager.currentSession.userType == 'BRANCH_MANAGER')" class="nav navbar-nav">
+                    <li ng-click="actions.updateSelectedReservationState('APPROVED')">Approve reservation</li>
+                    <li ng-click="actions.updateSelectedReservationState('DENIED')">Deny reservation</li>
                 </ul>
             </div>
         </div>
@@ -66,8 +70,8 @@
                                         </div>
                                     </md-input-container>
                                     <md-input-container>
-                                        <input mdc-datetime-picker date="false" time="true" type="text" short-time="true" show-todays-date placeholder="Time"
-                                               format="hh:mm a" ng-model="viewModel.newReservation.startDate"/>
+                                        <input mdc-datetime-picker date="false" time="true" type="text" short-time="true" show-todays-date placeholder="Time" ng-change="actions.validateNewReservation(newReservationDialogFrom)"
+                                               name="newReservationStartTime" format="hh:mm a" ng-model="viewModel.newReservation.startDate" required/>
                                     </md-input-container>
                                 </div>
                                 <div layout-gt-sm="row">
@@ -81,11 +85,14 @@
                                             <div ng-show="newReservationDialogFrom.newReservationEndDate.$error.startDateGreaterThenEndDate" ng-message="startDateGreaterThenEndDate">
                                                 End date is lower than Start date.
                                             </div>
+                                            <div ng-show="newReservationDialogFrom.newReservationEndDate.$error.startDateSameAsEndDate" ng-message="startDateSameAsEndDate">
+                                                End date is same as Start date.
+                                            </div>
                                         </div>
                                     </md-input-container>
                                     <md-input-container>
-                                        <input mdc-datetime-picker date="false" time="true" type="text" short-time="true" show-todays-date placeholder="Time"
-                                               format="hh:mm a" ng-model="viewModel.newReservation.endDate"/>
+                                        <input mdc-datetime-picker date="false" time="true" type="text" short-time="true" show-todays-date placeholder="Time" ng-change="actions.validateNewReservation(newReservationDialogFrom)"
+                                               name="newReservationEndTime" format="hh:mm a" ng-model="viewModel.newReservation.endDate" required/>
                                     </md-input-container>
                                 </div>
                             </ng-form>

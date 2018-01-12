@@ -11,7 +11,7 @@
             response = httpResponse.data;
             if (response != null) {
                 data = response.data.data;
-                if (response.data.isSuccess && response.token != null && data != null) {
+                if (response.data.isSuccess && response.data.token != null && data != null) {
                     var sessionInfo = new Web.ViewModels.SessionInfoViewModel();
                     sessionInfo.userId = data.id;
                     sessionInfo.username = request.userName;
@@ -21,7 +21,7 @@
                         sessionInfo.branchId = data.regionalBranch.id;
                         sessionInfo.currentCulture = settingsProvider.currentCulture;
                         sessionInfo.currentLanguage = settingsProvider.currentLanguage;
-                        sessionManager.createSession(response.token, sessionInfo);
+                        sessionManager.createSession(response.data.token, sessionInfo);
                         $state.go(Web.Constants.StateNames.IMPLICIT);
                     }else{
                         $scope.viewModel.infoMessage = "LOGIN.LOGIN_FAILED_BRANCH_NULL";

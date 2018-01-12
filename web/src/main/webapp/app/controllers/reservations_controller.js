@@ -198,22 +198,58 @@
     }
     $scope.actions.validateNewReservation = function(form){
         if ($scope.viewModel.newReservation.startDate){
+            form.newReservationStartTime.$setValidity('required', true);
             form.newReservationStartDate.$setValidity('required', true);
-            form.newReservationStartDate.$setValidity('startDateGreaterThenEndDate', $scope.viewModel.newReservation.startDate <= $scope.viewModel.newReservation.endDate);
-            form.newReservationStartDate.$setPristine();
         } else {
+            form.newReservationStartTime.$setValidity('required', false);
             form.newReservationStartDate.$setValidity('required', false);
         }
         if ($scope.viewModel.newReservation.endDate){
+            form.newReservationEndTime.$setValidity('required', true);
             form.newReservationEndDate.$setValidity('required', true);
-            form.newReservationEndDate.$setValidity('startDateGreaterThenEndDate', $scope.viewModel.newReservation.startDate <= $scope.viewModel.newReservation.endDate);
         } else {
+            form.newReservationEndTime.$setValidity('required', false);
             form.newReservationEndDate.$setValidity('required', false);
+        }
+        if ($scope.viewModel.newReservation.startDate && $scope.viewModel.newReservation.endDate) {
+            form.newReservationStartTime.$setValidity('startDateGreaterThenEndDate', $scope.viewModel.newReservation.startDate <= $scope.viewModel.newReservation.endDate);
+            form.newReservationStartDate.$setValidity('startDateGreaterThenEndDate', $scope.viewModel.newReservation.startDate <= $scope.viewModel.newReservation.endDate);
+            form.newReservationEndTime.$setValidity('startDateGreaterThenEndDate', $scope.viewModel.newReservation.startDate <= $scope.viewModel.newReservation.endDate);
+            form.newReservationEndDate.$setValidity('startDateGreaterThenEndDate', $scope.viewModel.newReservation.startDate <= $scope.viewModel.newReservation.endDate);
+            form.newReservationEndTime.$setValidity('startDateSameAsEndDate', +$scope.viewModel.newReservation.startDate !== +$scope.viewModel.newReservation.endDate);
+            form.newReservationEndDate.$setValidity('startDateSameAsEndDate', +$scope.viewModel.newReservation.startDate !== +$scope.viewModel.newReservation.endDate);
         }
         if ($scope.viewModel.newReservation.car){
             form.newReservationCar.$setValidity('required', true);
         }else {
             form.newReservationCar.$setValidity('required', false);
+        }
+    }
+    $scope.actions.updateSelectedReservationState = function(state){
+        if ($scope.viewModel.selectedEvent != null) {
+            var selectedEvent = $scope.viewModel.selectedEvent;
+            reservationsService.updateReservation(
+                {
+                    id: selectedEvent.id,
+                    car: { id: selectedEvent.car.id },
+                    user: { id: selectedEvent.user.id },
+                    reservationStartDate: new Date(new Date(selectedEvent.start).toUTCString()),
+                    reservationEndDate: new Date(new Date(selectedEvent.end).toUTCString()),
+                    state: state
+                }, function(isSuccess, errors){
+                    if (isSuccess){
+                        var message = "RESERVATIONS.UPDATED";
+                        if (state === 'APPROVED' || state === 'DENIED'){
+                            message = "RESERVATIONS." + state;
+                        }
+                        notificationsService.showSimple(message);
+                        $scope.calendarElement.fullCalendar('refetchEvents');
+                    } else {
+                        notificationsService.showSimple(contractConverter.convertReservationErrors(errors));
+                    }
+                },function(errors){
+                    notificationsService.showSimple(contractConverter.convertReservationErrors(errors));
+                });
         }
     }
 
