@@ -198,17 +198,26 @@
     }
     $scope.actions.validateNewReservation = function(form){
         if ($scope.viewModel.newReservation.startDate){
+            form.newReservationStartTime.$setValidity('required', true);
             form.newReservationStartDate.$setValidity('required', true);
-            form.newReservationStartDate.$setValidity('startDateGreaterThenEndDate', $scope.viewModel.newReservation.startDate <= $scope.viewModel.newReservation.endDate);
-            form.newReservationStartDate.$setPristine();
         } else {
+            form.newReservationStartTime.$setValidity('required', false);
             form.newReservationStartDate.$setValidity('required', false);
         }
         if ($scope.viewModel.newReservation.endDate){
+            form.newReservationEndTime.$setValidity('required', true);
             form.newReservationEndDate.$setValidity('required', true);
-            form.newReservationEndDate.$setValidity('startDateGreaterThenEndDate', $scope.viewModel.newReservation.startDate <= $scope.viewModel.newReservation.endDate);
         } else {
+            form.newReservationEndTime.$setValidity('required', false);
             form.newReservationEndDate.$setValidity('required', false);
+        }
+        if ($scope.viewModel.newReservation.startDate && $scope.viewModel.newReservation.endDate) {
+            form.newReservationStartTime.$setValidity('startDateGreaterThenEndDate', $scope.viewModel.newReservation.startDate <= $scope.viewModel.newReservation.endDate);
+            form.newReservationStartDate.$setValidity('startDateGreaterThenEndDate', $scope.viewModel.newReservation.startDate <= $scope.viewModel.newReservation.endDate);
+            form.newReservationEndTime.$setValidity('startDateGreaterThenEndDate', $scope.viewModel.newReservation.startDate <= $scope.viewModel.newReservation.endDate);
+            form.newReservationEndDate.$setValidity('startDateGreaterThenEndDate', $scope.viewModel.newReservation.startDate <= $scope.viewModel.newReservation.endDate);
+            form.newReservationEndTime.$setValidity('startDateSameAsEndDate', +$scope.viewModel.newReservation.startDate !== +$scope.viewModel.newReservation.endDate);
+            form.newReservationEndDate.$setValidity('startDateSameAsEndDate', +$scope.viewModel.newReservation.startDate !== +$scope.viewModel.newReservation.endDate);
         }
         if ($scope.viewModel.newReservation.car){
             form.newReservationCar.$setValidity('required', true);
