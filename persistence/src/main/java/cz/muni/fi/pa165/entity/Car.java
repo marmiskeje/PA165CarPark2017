@@ -93,19 +93,20 @@ public class Car {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null) return false;
         if (!(o instanceof Car)) return false;
 
         Car car = (Car) o;
 
-        if (getName() != null ? !getName().equals(car.getName()) : car.getName() != null) return false;
-        return getCreationDate() != null ? getCreationDate().equals(car.getCreationDate()) : car.getCreationDate() == null;
+        if (isDeactivated() != car.isDeactivated()) return false;
+        if (getId() != null ? !getId().equals(car.getId()) : car.getId() != null) return false;
+        return getName() != null ? getName().equals(car.getName()) : car.getName() == null;
     }
 
     @Override
     public int hashCode() {
-        int result = getName() != null ? getName().hashCode() : 0;
-        result = 31 * result + (getCreationDate() != null ? getCreationDate().hashCode() : 0);
+        int result = getId() != null ? getId().hashCode() : 0;
+        result = 31 * result + (getName() != null ? getName().hashCode() : 0);
+        result = 31 * result + (isDeactivated() ? 1 : 0);
         return result;
     }
 

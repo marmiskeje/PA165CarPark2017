@@ -69,23 +69,24 @@ public class UserDTO {
     public void setRegionalBranch(RegionalBranchDTO regionalBranch) {
         this.regionalBranch = regionalBranch;
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null) return false;
         if (!(o instanceof UserDTO)) return false;
 
-        UserDTO user = (UserDTO) o;
+        UserDTO userDTO = (UserDTO) o;
 
-        if (getUserName() != null ? !getUserName().equals(user.getUserName()) : user.getUserName() != null)
+        if (getId() != userDTO.getId()) return false;
+        if (getUserName() != null ? !getUserName().equals(userDTO.getUserName()) : userDTO.getUserName() != null)
             return false;
-        return getType() == user.getType();
+        return getType() == userDTO.getType();
     }
 
     @Override
     public int hashCode() {
-        int result = getUserName() != null ? getUserName().hashCode() : 0;
+        int result = (int) (getId() ^ (getId() >>> 32));
+        result = 31 * result + (getUserName() != null ? getUserName().hashCode() : 0);
         result = 31 * result + (getType() != null ? getType().hashCode() : 0);
         return result;
     }

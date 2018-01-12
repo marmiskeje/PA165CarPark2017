@@ -74,21 +74,23 @@ public class CarDTO {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null) return false;
         if (!(o instanceof CarDTO)) return false;
 
-        CarDTO car = (CarDTO) o;
+        CarDTO carDTO = (CarDTO) o;
 
-        if (getName() != null ? !getName().equals(car.getName()) : car.getName() != null) return false;
-        return getCreationDate() != null ? getCreationDate().equals(car.getCreationDate()) : car.getCreationDate() == null;
+        if (isDeactivated() != carDTO.isDeactivated()) return false;
+        if (getId() != null ? !getId().equals(carDTO.getId()) : carDTO.getId() != null) return false;
+        return getName() != null ? getName().equals(carDTO.getName()) : carDTO.getName() == null;
     }
 
     @Override
     public int hashCode() {
-        int result = getName() != null ? getName().hashCode() : 0;
-        result = 31 * result + (getCreationDate() != null ? getCreationDate().hashCode() : 0);
+        int result = getId() != null ? getId().hashCode() : 0;
+        result = 31 * result + (getName() != null ? getName().hashCode() : 0);
+        result = 31 * result + (isDeactivated() ? 1 : 0);
         return result;
     }
+
     @Override
     public String toString() {
         return "Car{" +

@@ -114,11 +114,11 @@ public class User {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null) return false;
         if (!(o instanceof User)) return false;
 
         User user = (User) o;
 
+        if (getId() != user.getId()) return false;
         if (getUserName() != null ? !getUserName().equals(user.getUserName()) : user.getUserName() != null)
             return false;
         if (getPassword() != null ? !getPassword().equals(user.getPassword()) : user.getPassword() != null)
@@ -128,7 +128,8 @@ public class User {
 
     @Override
     public int hashCode() {
-        int result = getUserName() != null ? getUserName().hashCode() : 0;
+        int result = (int) (getId() ^ (getId() >>> 32));
+        result = 31 * result + (getUserName() != null ? getUserName().hashCode() : 0);
         result = 31 * result + (getPassword() != null ? getPassword().hashCode() : 0);
         result = 31 * result + (getType() != null ? getType().hashCode() : 0);
         return result;
