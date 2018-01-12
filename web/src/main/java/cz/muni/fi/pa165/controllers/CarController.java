@@ -85,7 +85,7 @@ public class CarController {
         }
         LOG.debug("REST update car: ", car);
 
-        return carFacade.createCar(car);
+        return carFacade.updateCar(car);
     }
 
     @RequestMapping(value = ApiDefinition.Car.ID, method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
