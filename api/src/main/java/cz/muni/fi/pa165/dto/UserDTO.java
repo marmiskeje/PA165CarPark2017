@@ -76,11 +76,12 @@ public class UserDTO {
         if (o == null) return false;
         if (!(o instanceof UserDTO)) return false;
 
-        UserDTO user = (UserDTO) o;
+        UserDTO userDTO  = (UserDTO) o;
 
-        if (getUserName() != null ? !getUserName().equals(user.getUserName()) : user.getUserName() != null)
+        if (getId() != userDTO.getId()) return false;
+        if (getUserName() != null ? !getUserName().equals(userDTO .getUserName()) : userDTO .getUserName() != null)
             return false;
-        return getType() == user.getType();
+        return getType() == userDTO .getType();
     }
 
     @Override

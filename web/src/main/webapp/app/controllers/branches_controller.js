@@ -1,7 +1,6 @@
 Web.Controllers.BranchesController = function ($rootScope, $scope, $http, $mdDialog, notificationsService, contractConverter, settingsProvider, carService, branchesService, sessionManager) {
     var initList = function () {
         var request = new Web.Data.GetBranchesRequest();
-
         branchesService.getBranches(request, function (httpResponse) {
             var response = httpResponse.data;
             if (response !== null) {
@@ -150,7 +149,12 @@ Web.Controllers.BranchesController = function ($rootScope, $scope, $http, $mdDia
             if (response !== null) {
                 var data = response.data;
                 if (response.isSuccess && data !== null) {
-                    branchToUpdate.employees.push(userToBeAssigned);
+                    angular.forEach($scope.viewModel.branches, function(branch){
+                        if (branch.id === $scope.viewModel.selectedItem.id) {
+                            branch.employees.push(userToBeAssigned);
+                            $scope.viewModel.selectedItem = branchToUpdate;
+                        }   
+                    });
                 } else {
                     notificationsService.showSimple("BRANCHES.UNKNOWN_ERROR");
                 }
@@ -173,7 +177,12 @@ Web.Controllers.BranchesController = function ($rootScope, $scope, $http, $mdDia
             if (response !== null) {
                 var data = response.data;
                 if (response.isSuccess && data !== null) {
-                    branchToUpdate.cars.push(carToBeAssigned);
+                    angular.forEach($scope.viewModel.branches, function(branch){
+                        if (branch.id === $scope.viewModel.selectedItem.id) {
+                            branch.cars.push(carToBeAssigned);
+                            $scope.viewModel.selectedItem = branchToUpdate;
+                        }   
+                    });
                 } else {
                     notificationsService.showSimple("BRANCHES.UNKNOWN_ERROR");
                 }
@@ -195,6 +204,7 @@ Web.Controllers.BranchesController = function ($rootScope, $scope, $http, $mdDia
         angular.forEach($scope.viewModel.cars, function(car){
             if (car.selected) selectedCars.push(car);
         })
+        
         var request = {id: $scope.viewModel.addBranch.id, name: $scope.viewModel.addBranch.name, cars: selectedCars, employees: employees};
         branchesService.createBranch(request, function (httpResponse) {
             var response = httpResponse.data;
@@ -202,6 +212,7 @@ Web.Controllers.BranchesController = function ($rootScope, $scope, $http, $mdDia
                 var data = response.data;
                 if (response.isSuccess && data !== null) {
                     $scope.viewModel.branches.push(data.data);
+                    $scope.viewModel.selectedItem = branches[branches.length - 1];
                     data.data.manager = managerToSet;
                 } else {
                     notificationsService.showSimple("BRANCHES.UNKNOWN_ERROR");
@@ -223,6 +234,9 @@ Web.Controllers.BranchesController = function ($rootScope, $scope, $http, $mdDia
         var managerToSet = $scope.viewModel.selectedItem.manager;
         var selectedCars = [];
         var employees = [];
+        angular.forEach($scope.viewModel.selectedItem.employees, function(employee){
+            if (employee.userType !== "BRANCH_MANAGER") employees.push(employee);
+        })
         employees.push(managerToSet);
         angular.forEach($scope.viewModel.cars, function(car){
             if (car.selected) selectedCars.push(car);
@@ -290,8 +304,10 @@ Web.Controllers.BranchesController = function ($rootScope, $scope, $http, $mdDia
     $scope.setSelected = function(item) {
         $scope.viewModel.selectedItem = item;
         angular.forEach($scope.viewModel.cars, function(car){
+            car.selected = false;
             angular.forEach(item.cars, function(itemCar){
-                if (car.id === itemCar.id) car.selected = true;
+                if (car.id === itemCar.id) 
+                    car.selected = true;
             })
         })
         angular.forEach(item.employees, function(employee){

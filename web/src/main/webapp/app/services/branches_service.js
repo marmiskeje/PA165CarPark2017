@@ -94,7 +94,7 @@ Web.Services.BranchesService = function ($http) {
                     headers: {
                       'Content-Type': 'application/json'
                     },
-                    data: {id, name, cars}
+                    data: {id, name, cars, employees}
 		}
     	
     	$http(req)
@@ -106,7 +106,7 @@ Web.Services.BranchesService = function ($http) {
                 response.data = httpResponse;
                 response.data.isSuccess = false;
                 error(response);
-		    });
+            });
     }
     
     this.assignCar = function (request, onSuccess, onError) {    
@@ -132,7 +132,7 @@ Web.Services.BranchesService = function ($http) {
                 response.data = httpResponse;
                 response.data.isSuccess = false;
                 error(response);
-		    });
+            });
     }
     
     this.assignUser = function (request, onSuccess, onError) {    
