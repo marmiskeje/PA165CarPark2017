@@ -77,7 +77,7 @@ Web.Services.BranchesService = function ($http) {
                 response.data = httpResponse;
                 response.data.isSuccess = false;
                 error(response);
-		    });
+            });
     }
     
     this.updateBranch = function (request, onSuccess, onError) {    

@@ -10,6 +10,10 @@ Web.Controllers.BranchesController = function ($rootScope, $scope, $http, $mdDia
                     $scope.viewModel.branches = [];
                     for (var i = 0; i < data.length; i++) {
                         var toAdd = contractConverter.convertBranchToViewModel(data[i]);
+                        angular.forEach(toAdd.employees, function(employee){
+                            if (employee.userType === "BRANCH_MANAGER") 
+                                toAdd.manager = employee;
+                        })
                         $scope.viewModel.branches.push(toAdd);
                     }
                 } else {
@@ -70,6 +74,7 @@ Web.Controllers.BranchesController = function ($rootScope, $scope, $http, $mdDia
             }, function (httpResponse) {
                 notificationsService.showSimple("CARS.UNKNOWN_SERVER_ERROR");
         });
+        $scope.viewModel.selectedItem = null;
     }
 
     $scope.actions = new Object();
@@ -183,39 +188,6 @@ Web.Controllers.BranchesController = function ($rootScope, $scope, $http, $mdDia
     };
     
     $scope.actions.addBranch = function () {
-        /*var selectedCars = [];
-        angular.forEach($scope.viewModel.cars, function(car){
-            if (car.selected) selectedCars.push(car);
-        })*/
-        /*var managerToSet = $scope.viewModel.manager;
-        var request = {name: $scope.viewModel.addBranch.name};
-        branchesService.createBranch(request, function (httpResponse) {
-            var response = httpResponse.data;
-            if (response !== null) {
-                var data = response.data;
-                if (response.isSuccess && data !== null) {
-                    angular.forEach($scope.viewModel.cars, function(car){
-                        if (car.selected) {
-                            $scope.viewModel.selectedItem = data.data;
-                            $scope.viewModel.carToAssign = car;
-                            $scope.actions.assignCar();
-                            data.data.cars.push(car);
-                        };
-                    })
-                    $scope.viewModel.selectedItem = data.data;
-                    $scope.viewModel.userToAssign = managerToSet;
-                    data.data.employees.push(managerToSet);
-                    $scope.actions.assignUser();
-                    $scope.viewModel.branches.push(data.data);
-                } else {
-                    notificationsService.showSimple("BRANCHES.UNKNOWN_ERROR");
-                }
-            } else {
-                notificationsService.showSimple("BRANCHES.UNKNOWN_ERROR");
-            }
-        }, function (httpResponse) {
-            notificationsService.showSimple("BRANCHES.UNKNOWN_SERVER_ERROR");
-        });*/
         var managerToSet = $scope.viewModel.selectedItem.manager;
         var selectedCars = [];
         var employees = [];
@@ -230,19 +202,7 @@ Web.Controllers.BranchesController = function ($rootScope, $scope, $http, $mdDia
                 var data = response.data;
                 if (response.isSuccess && data !== null) {
                     $scope.viewModel.branches.push(data.data);
-                    /*angular.forEach($scope.viewModel.branches, function(branch){
-                        if (branch.id === $scope.viewModel.selectedItem.id) {
-                            branch.cars = [];
-                            branch.manager = managerToSet;
-                            
-                        angular.forEach($scope.viewModel.cars, function(car){
-                            if (car.selected) {
-                                branch.cars.push(car);
-                            };
-                        });
-                        $scope.viewModel.selectedItem = branch;
-                        }   
-                    });*/
+                    data.data.manager = managerToSet;
                 } else {
                     notificationsService.showSimple("BRANCHES.UNKNOWN_ERROR");
                 }
@@ -335,8 +295,9 @@ Web.Controllers.BranchesController = function ($rootScope, $scope, $http, $mdDia
             })
         })
         angular.forEach(item.employees, function(employee){
-            if (employee.userType === "BRANCH_MANAGER") 
-                $scope.viewModel.selectedItem.manager = employee;
+            if (employee.userType === "BRANCH_MANAGER") {
+                $scope.viewModel.manager = employee;
+            }
         })
     }
     

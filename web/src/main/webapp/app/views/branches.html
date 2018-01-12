@@ -66,8 +66,8 @@
                                 <div layout-gt-sm="row">
                                     <md-input-container class="md-block">
                                         <label>Manager</label>
-                                        <md-select id="manager" ng-model="viewModel.selectedItem.manager" required ng-selected="viewModel.selectedItem.manager">
-                                            <md-option ng-repeat="user in viewModel.users" ng-value="user" ng-disabled="user.userType !== 'BRANCH_MANAGER'">
+                                        <md-select id="manager" ng-model="viewModel.selectedItem.manager.name" required ng-selected="viewModel.selectedItem.manager">
+                                            <md-option ng-repeat="user in viewModel.users" ng-value="user.name" ng-disabled="user.userType !== 'BRANCH_MANAGER'">
                                                 {{user.name}}
                                             </md-option>
                                         </md-select>
@@ -83,7 +83,7 @@
                                     <div ng-repeat="car in viewModel.cars">
                                         <ul>
                                         <label for="chkCar_{{car.id}}">
-                                            <input id="chkCar_{{car.id}}" type="checkbox" ng-model="vievModel.selected" ng-checked="car.selected" ng-click="car.selected = true"/>
+                                            <input id="chkCar_{{car.id}}" type="checkbox" ng-model="vievModel.selected" ng-checked="car.selected" ng-click="car.selected = !car.selected"/>
                                         {{car.name}}
                                         </ul>
                                     </div>
