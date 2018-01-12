@@ -21,10 +21,8 @@
             } else {
                 notificationsService.showSimple("RESERVATIONS.UNKNOWN_ERROR");
             }
-            $scope.viewModel.selectedEvent = null;
-            $scope.$digest();
+            //$scope.$digest();
         }, function (httpResponse) {
-            $scope.viewModel.selectedEvent = null;
             notificationsService.showSimple("RESERVATIONS.UNKNOWN_SERVER_ERROR");
         });
     }
@@ -56,6 +54,8 @@
             , function(isSuccess, errors){
                 if (isSuccess){
                     notificationsService.showSimple("CARS.NEW_CREATED");
+                    $scope.viewModel.selectedItem = null;
+                    initList();
                 } else {
                     notificationsService.showSimple("CARS.UNKNOWN_ERROR");
                 }

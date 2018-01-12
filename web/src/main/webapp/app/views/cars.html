@@ -1,16 +1,14 @@
-﻿Cars
 ﻿<div class="container-fluid h-100">
     <div class="row align-items-center" style="min-height: 3em">
         <div class="col">
-            <!-- here may be some filtering -->
+            <h3>{{pageSubtitle | translate}}</h3><!-- here may be some filtering -->
         </div>
     </div>
     <div class="row h-100">
         <div class="col">
-            <div id="cars_list">
-                <div ng-model="viewModel.cars" required/>
+            <div id="cars_list" class="nice-list-view">
                 <ul>
-                    <li ng-repeat="car in viewModel.cars" ng-click="setSelected(car)">{{car.name}}</li>
+                    <li ng-repeat="car in viewModel.cars" ng-click="setSelected(car)" ng-class="{'list-view-item-selected': viewModel.selectedItem != null && viewModel.selectedItem.id == car.id}">{{car.name}}</li>
                 </ul>
             </div>
         </div>
