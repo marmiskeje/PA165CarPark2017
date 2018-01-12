@@ -174,6 +174,12 @@ Web.Controllers.BranchesController = function ($rootScope, $scope, $http, $mdDia
                 var data = response.data;
                 if (response.isSuccess && data !== null) {
                     branchToUpdate.cars.push(carToBeAssigned);
+                    angular.forEach($scope.viewModel.branches, function(branch){
+                        if (branch.id === $scope.viewModel.selectedItem.id) {
+                           branch = branchToUpdate;
+                           $scope.viewModel.selectedItem = branchToUpdate;
+                        }   
+                    });
                 } else {
                     notificationsService.showSimple("BRANCHES.UNKNOWN_ERROR");
                 }
@@ -223,6 +229,9 @@ Web.Controllers.BranchesController = function ($rootScope, $scope, $http, $mdDia
         var managerToSet = $scope.viewModel.selectedItem.manager;
         var selectedCars = [];
         var employees = [];
+        angular.forEach($scope.viewModel.selectedItem.employees, function(employee){
+            if (employee.userType !== "BRANCH_MANAGER") employees.push(employee);
+        })
         employees.push(managerToSet);
         angular.forEach($scope.viewModel.cars, function(car){
             if (car.selected) selectedCars.push(car);

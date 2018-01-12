@@ -94,7 +94,7 @@ Web.Services.BranchesService = function ($http) {
                     headers: {
                       'Content-Type': 'application/json'
                     },
-                    data: {id, name, cars}
+                    data: {id, name, cars, employees}
 		}
     	
     	$http(req)

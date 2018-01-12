@@ -32,9 +32,9 @@
         var result = new Web.ViewModels.UserViewModel();
         if (source != null) {
             result.id = source.id;
-            result.username = source.userName;
-            result.name = source.userName;
-            result.userType = source.type;
+            result.username = source.username;
+            result.name = source.username;
+            result.userType = source.userType;
             result.branchName = source.branchName;
         }
         return result;

@@ -7,8 +7,8 @@ import java.time.LocalDateTime;
 public class UserDTO {
 
     private long id;
-    private String userName;
-    private UserType type;
+    private String username;
+    private UserType userType;
     private LocalDateTime creationDate;
     private LocalDateTime activationDate;
     private LocalDateTime modificationDate;
@@ -23,19 +23,19 @@ public class UserDTO {
     }
 
     public String getUserName() {
-        return userName;
+        return username;
     }
 
     public void setUserName(String userName) {
-        this.userName = userName;
+        this.username = userName;
     }
 
     public UserType getType() {
-        return type;
+        return userType;
     }
 
     public void setType(UserType type) {
-        this.type = type;
+        this.userType = type;
     }
 
     public LocalDateTime getCreationDate() {
@@ -94,8 +94,8 @@ public class UserDTO {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", userName='" + userName + '\'' +
-                ", type=" + type +
+                ", userName='" + username + '\'' +
+                ", type=" + userType +
                 ", creationDate=" + creationDate +
                 ", activationDate=" + activationDate +
                 ", modificationDate=" + modificationDate +

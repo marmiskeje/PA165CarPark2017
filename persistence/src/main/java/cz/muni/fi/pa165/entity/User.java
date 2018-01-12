@@ -21,7 +21,7 @@ public class User {
 
     @NotNull
     @Column(nullable=false, unique = true)
-    private String userName;
+    private String username;
 
     @NotNull
     @Size(min = 8)
@@ -31,7 +31,7 @@ public class User {
     @NotNull
     @Column(nullable=false)
     @Enumerated(EnumType.STRING)
-    private UserType type;
+    private UserType userType;
 
     @NotNull
     @Column(nullable=false)
@@ -56,11 +56,11 @@ public class User {
     }
 
     public String getUserName() {
-        return userName;
+        return username;
     }
 
     public void setUserName(String userName) {
-        this.userName = userName;
+        this.username = userName;
     }
 
     public String getPassword() {
@@ -72,11 +72,11 @@ public class User {
     }
 
     public UserType getType() {
-        return type;
+        return userType;
     }
 
     public void setType(UserType type) {
-        this.type = type;
+        this.userType = type;
     }
 
     public LocalDateTime getCreationDate() {
@@ -138,9 +138,9 @@ public class User {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", userName='" + userName + '\'' +
+                ", userName='" + username + '\'' +
                 ", password='" + password + '\'' +
-                ", type=" + type +
+                ", type=" + userType +
                 ", creationDate=" + creationDate +
                 ", activationDate=" + activationDate +
                 ", modificationDate=" + modificationDate +
