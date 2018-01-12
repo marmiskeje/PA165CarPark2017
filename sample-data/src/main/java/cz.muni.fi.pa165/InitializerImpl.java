@@ -121,19 +121,16 @@ public class InitializerImpl implements Initializer {
         if (employees != null) {
             for (User employee : employees) {
                 b.addEmployee(employee);
-                userService.update(employee); // TODO due to: update branch in employee?
             }
         }
         if (cars != null) {
             for (Car car : cars) {
                 b.addCar(car);
-                carService.updateCar(car); // TODO due to: update branch in car?
             }
         }
         if (children != null) {
             for (RegionalBranch child : children) {
                 b.addChild(child);
-                branchService.update(child); // TODO due to: update branch in car?
             }
         }
 
