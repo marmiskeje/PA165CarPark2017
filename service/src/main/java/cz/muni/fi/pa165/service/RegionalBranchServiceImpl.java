@@ -64,6 +64,7 @@ public class RegionalBranchServiceImpl implements RegionalBranchService {
             }else{
                 RegionalBranch old = foundCar.getRegionalBranch();
                 old.removeCar(foundCar);
+                foundCar.setRegionalBranch(null);
                 regionalBranchDao.save(old);
                 branchToSave.addCar(foundCar);
             }
@@ -76,6 +77,7 @@ public class RegionalBranchServiceImpl implements RegionalBranchService {
             }else{
                 RegionalBranch old = foundEmployee.getRegionalBranch();
                 old.removeEmployee(foundEmployee);
+                foundEmployee.setRegionalBranch(null);
                 regionalBranchDao.save(old);
                 branchToSave.addEmployee(foundEmployee);
             }
@@ -108,6 +110,9 @@ public class RegionalBranchServiceImpl implements RegionalBranchService {
             existingBranch.setName(regionalBranch.getName());
             existingBranch.setParent(regionalBranch.getParent());
 
+            existingBranch.getCars().forEach(item ->{
+                item.setRegionalBranch(null);
+            });
             existingBranch.removeAllCars();
             regionalBranch.getCars().forEach(item ->{
                 Car foundCar = carDao.findOne(item.getId());
@@ -116,11 +121,15 @@ public class RegionalBranchServiceImpl implements RegionalBranchService {
                 }else{
                     RegionalBranch old = foundCar.getRegionalBranch();
                     old.removeCar(foundCar);
+                    foundCar.setRegionalBranch(null);
                     regionalBranchDao.save(old);
                     existingBranch.addCar(foundCar);
                 }
             });
 
+            existingBranch.getEmployees().forEach(item ->{
+                item.setRegionalBranch(null);
+            });
             existingBranch.removeAllEmployees();
             regionalBranch.getEmployees().forEach(item -> {
                 User foundEmployee = userDao.findOne(item.getId());
@@ -129,6 +138,7 @@ public class RegionalBranchServiceImpl implements RegionalBranchService {
                 }else{
                     RegionalBranch old = foundEmployee.getRegionalBranch();
                     old.removeEmployee(foundEmployee);
+                    foundEmployee.setRegionalBranch(null);
                     regionalBranchDao.save(old);
                     existingBranch.addEmployee(foundEmployee);
                 }

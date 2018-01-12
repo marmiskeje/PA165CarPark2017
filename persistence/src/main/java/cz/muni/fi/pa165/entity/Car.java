@@ -77,8 +77,8 @@ public class Car {
     public RegionalBranch getRegionalBranch() {
         return regionalBranch;
     }
-    // internal only
-    void setRegionalBranch(RegionalBranch regionalBranch) {
+
+    public void setRegionalBranch(RegionalBranch regionalBranch) {
         this.regionalBranch = regionalBranch;
     }
 

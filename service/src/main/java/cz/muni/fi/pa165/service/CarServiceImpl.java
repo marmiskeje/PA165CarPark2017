@@ -60,7 +60,9 @@ public class CarServiceImpl implements CarService{
         try{
             //change is permitted only for this properties:
             existingCar.setName(car.getName());
-            existingCar.setActivationDate(car.getActivationDate());
+            if(car.getActivationDate()!=null){
+                existingCar.setActivationDate(car.getActivationDate());
+            }
             existingCar.setModificationDate(timeService.getCurrentTime());
             existingCar.setDeactivated(car.isDeactivated());
             carDAO.save(existingCar);
