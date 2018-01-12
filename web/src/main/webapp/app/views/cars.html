@@ -1,16 +1,14 @@
-﻿Cars
 ﻿<div class="container-fluid h-100">
     <div class="row align-items-center" style="min-height: 3em">
         <div class="col">
-            <!-- here may be some filtering -->
+            <h3>{{pageSubtitle | translate}}</h3><!-- here may be some filtering -->
         </div>
     </div>
     <div class="row h-100">
         <div class="col">
-            <div id="cars_list">
-                <div ng-model="viewModel.cars" required/>
+            <div id="cars_list" class="nice-list-view">
                 <ul>
-                    <li ng-repeat="car in viewModel.cars" ng-click="setSelected(car)">{{car.name}}</li>
+                    <li ng-repeat="car in viewModel.cars" ng-click="setSelected(car)" ng-class="{'list-view-item-selected': viewModel.selectedItem != null && viewModel.selectedItem.id == car.id}">{{car.name}}</li>
                 </ul>
             </div>
         </div>
@@ -29,7 +27,7 @@
                     <li ng-click="actions.deleteSelectedCar()">Remove selected car</li>
                 </ul>
                 <ul class="nav navbar-nav">
-                    <li ng-click="actions.editSelectedCar($event)">Edit selected car</li>
+                    <li ng-click="actions.showEditCarDialog($event)">Edit selected car</li>
                 </ul>
             </div>
         </div>
@@ -67,6 +65,45 @@
                     Create
                 </md-button>
                 <md-button ng-click="actions.cancelAddCar()">
+                    Cancel
+                </md-button>
+            </md-dialog-actions>
+        </md-dialog>
+    </div>
+</div>
+
+<div style="visibility: collapse">
+    <div class="md-dialog-container" id="editCarDialog">
+        <md-dialog layout-padding style="min-width:350px">
+            <md-toolbar>
+                <div class="md-toolbar-tools">
+                    <h2>Edit a car</h2>
+                    <span flex></span>
+                </div>
+            </md-toolbar>
+            <md-dialog-content layout="column">
+                <md-content layout-padding >
+                    <div>
+                        <form name="editCarDialogForm">
+                            <md-input-container class="md-block">
+                                <div layout-gt-sm="row">
+                                    <label>Name</label>
+                                    <input ng-model="viewModel.editCar.name" required ng-value="viewModel.editCar.name"></input>
+                                    <div ng-messages="viewModel.editCar.name.$error" multiple md-auto-hide="true">
+                                        <div ng-message="required">
+                                            Name is required.
+                                        </div>
+                                    </div>
+                                </div>
+                            </md-input-container>
+                        </form>
+                    </div>
+            </md-dialog-content>
+            <md-dialog-actions layout="row">
+                <md-button class="md-primary" ng-click="actions.editCar()" ng-disabled="editCarDialogForm.$invalid">
+                    Save
+                </md-button>
+                <md-button ng-click="actions.cancelEditCar()">
                     Cancel
                 </md-button>
             </md-dialog-actions>

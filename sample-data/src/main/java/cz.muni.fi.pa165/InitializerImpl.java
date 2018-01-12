@@ -65,6 +65,7 @@ public class InitializerImpl implements Initializer {
         List<User> headquartersEmployees = new ArrayList<>();
         headquartersEmployees.add(admin);
         headquartersEmployees.add(standa);
+        headquartersEmployees.add(pepa);
 
         List<Car> brnoCars = new ArrayList<>();
         brnoCars.add(skoda);
@@ -77,7 +78,6 @@ public class InitializerImpl implements Initializer {
         brnoEmployees.add(tomas);
         brnoEmployees.add(denis);
         brnoEmployees.add(mato);
-        brnoEmployees.add(pepa);
         brnoEmployees.add(franta);
 
         RegionalBranch headquarters = this.createRegionalBranch("Headquarters",headquartersEmployees, headquarterCars, null, null );
@@ -87,7 +87,7 @@ public class InitializerImpl implements Initializer {
         //create Reservations
         CarReservationRequest first = this.createReservationRequest(audi, denis, currentTime, currentTime.plus(1, ChronoUnit.DAYS), CarReservationRequestState.CREATED);
         CarReservationRequest second = this.createReservationRequest(ford, mato, currentTime, currentTime.plus(1, ChronoUnit.DAYS), CarReservationRequestState.APPROVED);
-        CarReservationRequest third = this.createReservationRequest(volvo, franta, currentTime, currentTime.plus(1, ChronoUnit.DAYS), CarReservationRequestState.DENIED);
+        CarReservationRequest third = this.createReservationRequest(volvo, franta, currentTime, currentTime.plus(1, ChronoUnit.DAYS), CarReservationRequestState.CREATED);
 
         this.createReservationRequest(mazda, standa, currentTime, currentTime.plus(1, ChronoUnit.DAYS), CarReservationRequestState.APPROVED);
     }
@@ -121,19 +121,16 @@ public class InitializerImpl implements Initializer {
         if (employees != null) {
             for (User employee : employees) {
                 b.addEmployee(employee);
-                userService.update(employee); // TODO due to: update branch in employee?
             }
         }
         if (cars != null) {
             for (Car car : cars) {
                 b.addCar(car);
-                carService.updateCar(car); // TODO due to: update branch in car?
             }
         }
         if (children != null) {
             for (RegionalBranch child : children) {
                 b.addChild(child);
-                branchService.update(child); // TODO due to: update branch in car?
             }
         }
 
@@ -147,10 +144,13 @@ public class InitializerImpl implements Initializer {
         reservationRequest.setUser(user);
         reservationRequest.setReservationStartDate(reservationStartDate);
         reservationRequest.setReservationEndDate(reservationEndDate);
-        reservationRequest.setState(state);
         reservationRequest.setCreationDate(currentTime);
         reservationRequest.setModificationDate(currentTime);
         reservationsService.create(reservationRequest);
+        if(CarReservationRequestState.APPROVED.equals(state) || CarReservationRequestState.DENIED.equals(state)){
+            reservationRequest.setState(state);
+            reservationsService.update(reservationRequest); //because after create all reservations are set to created
+        }
         return reservationRequest;
     }
 }

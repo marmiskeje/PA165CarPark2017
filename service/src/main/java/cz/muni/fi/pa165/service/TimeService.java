@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 public interface TimeService {
     /**
      * Get current time
-     * @return current time
+     * @return current time in UTC
      */
     public LocalDateTime getCurrentTime();
 }

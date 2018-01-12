@@ -1,7 +1,7 @@
 ﻿<div class="container-fluid h-100">
     <div class="row align-items-center" style="min-height: 3em">
         <div class="col">
-            <!-- here may be some filtering -->
+            <h3>{{pageSubtitle | translate}}</h3><!-- here may be some filtering -->
         </div>
     </div>
     <div class="row h-100">
@@ -12,7 +12,7 @@
             <div class="container-fluid command-menu">
                 <h3>General actions:</h3>
                 <ul class="nav navbar-nav">
-                    <li ng-click="actions.showNewReservationDialog($event)">Create new reservation</li>
+                    <li ng-click="actions.showReservationDialog(null, $event)">Create new reservation</li>
                 </ul>
             </div>
             <br />
@@ -21,6 +21,13 @@
                 <h3>Selected item actions:</h3>
                 <ul class="nav navbar-nav">
                     <li ng-click="actions.deleteSelectedReservation()">Delete reservation</li>
+                </ul>
+                <ul ng-show="(services.sessionManager.currentSession.userId === viewModel.selectedEvent.user.id && viewModel.selectedEvent.state === 'CREATED') || services.sessionManager.currentSession.userType == 'ADMIN'" class="nav navbar-nav">
+                    <li ng-click="actions.showReservationDialog(viewModel.selectedEvent, $event)">Edit reservation</li>
+                </ul>
+                <ul ng-show="viewModel.selectedEvent.state !== 'APPROVED' && (services.sessionManager.currentSession.userType == 'ADMIN' || services.sessionManager.currentSession.userType == 'BRANCH_MANAGER')" class="nav navbar-nav">
+                    <li ng-click="actions.updateSelectedReservationState('APPROVED')">Approve reservation</li>
+                    <li ng-click="actions.updateSelectedReservationState('DENIED')">Deny reservation</li>
                 </ul>
             </div>
         </div>
@@ -31,23 +38,23 @@
         <md-dialog layout-padding style="min-width:350px">
                 <md-toolbar>
                     <div class="md-toolbar-tools">
-                        <h2>New reservation</h2>
+                        <h2>{{viewModel.workingReservationDialog.title | translate}}</h2>
                         <span flex></span>
                     </div>
                 </md-toolbar>
                 <md-dialog-content layout="column">
                     <md-content layout-padding >
                         <div>
-                            <ng-form name="newReservationDialogFrom">
+                            <ng-form name="ReservationDialogFrom">
                                 <md-input-container class="md-block">
                                     <label>Car</label>
-                                    <md-select name="newReservationCar" ng-model="viewModel.newReservation.car" ng-change="actions.validateNewReservation(newReservationDialogFrom)" required>
+                                    <md-select name="newReservationCar" ng-model="viewModel.workingReservation.car" ng-change="actions.validateReservation(ReservationDialogFrom)" required>
                                         <md-option ng-repeat="car in viewModel.cars" ng-value="car" >
                                             {{car.name}}
                                         </md-option>
                                     </md-select>
-                                    <div ng-messages="viewModel.newReservation.car.$error" ng-messages-multiple="true" md-auto-hide="true">
-                                        <div ng-show="newReservationDialogFrom.newReservationCar.$error.required" ng-message="required">
+                                    <div ng-messages="viewModel.workingReservation.car.$error" ng-messages-multiple="true" md-auto-hide="true">
+                                        <div ng-show="ReservationDialogFrom.newReservationCar.$error.required" ng-message="required">
                                             Car is required.
                                         </div>
                                     </div>
@@ -55,47 +62,50 @@
                                 <div layout-gt-sm="row">
                                     <md-input-container>
                                         <label>Start date</label>
-                                        <md-datepicker name="newReservationStartDate" ng-model="viewModel.newReservation.startDate" ng-change="actions.validateNewReservation(newReservationDialogFrom)" required></md-datepicker>
-                                        <div ng-messages="viewModel.newReservation.startDate.$error" ng-messages-multiple="true" md-auto-hide="true">
-                                            <div ng-show="newReservationDialogFrom.newReservationStartDate.$error.required" ng-message="required">
+                                        <md-datepicker name="newReservationStartDate" ng-model="viewModel.workingReservation.startDate" ng-change="actions.validateReservation(ReservationDialogFrom)" required></md-datepicker>
+                                        <div ng-messages="viewModel.workingReservation.startDate.$error" ng-messages-multiple="true" md-auto-hide="true">
+                                            <div ng-show="ReservationDialogFrom.newReservationStartDate.$error.required" ng-message="required">
                                                 Start date is required.
                                             </div>
-                                            <div ng-show="newReservationDialogFrom.newReservationStartDate.$error.startDateGreaterThenEndDate" ng-message="startDateGreaterThenEndDate">
+                                            <div ng-show="ReservationDialogFrom.newReservationStartDate.$error.startDateGreaterThenEndDate" ng-message="startDateGreaterThenEndDate">
                                                 Start date is greater than End date.
                                             </div>
                                         </div>
                                     </md-input-container>
                                     <md-input-container>
-                                        <input mdc-datetime-picker date="false" time="true" type="text" short-time="true" show-todays-date placeholder="Time"
-                                               format="hh:mm a" ng-model="viewModel.newReservation.startDate"/>
+                                        <input mdc-datetime-picker date="false" time="true" type="text" short-time="true" show-todays-date placeholder="Time" ng-change="actions.validateReservation(ReservationDialogFrom)"
+                                               name="newReservationStartTime" format="hh:mm a" ng-model="viewModel.workingReservation.startDate" required/>
                                     </md-input-container>
                                 </div>
                                 <div layout-gt-sm="row">
                                     <md-input-container>
                                         <label>End date</label>
-                                        <md-datepicker name="newReservationEndDate" ng-model="viewModel.newReservation.endDate" ng-change="actions.validateNewReservation(newReservationDialogFrom)" required></md-datepicker>
-                                        <div ng-messages="viewModel.newReservation.endDate.$error" ng-messages-multiple="true" md-auto-hide="true">
-                                            <div ng-show="newReservationDialogFrom.newReservationEndDate.$error.required" ng-message="required">
+                                        <md-datepicker name="newReservationEndDate" ng-model="viewModel.workingReservation.endDate" ng-change="actions.validateReservation(ReservationDialogFrom)" required></md-datepicker>
+                                        <div ng-messages="viewModel.workingReservation.endDate.$error" ng-messages-multiple="true" md-auto-hide="true">
+                                            <div ng-show="ReservationDialogFrom.newReservationEndDate.$error.required" ng-message="required">
                                                 End date is required.
                                             </div>
-                                            <div ng-show="newReservationDialogFrom.newReservationEndDate.$error.startDateGreaterThenEndDate" ng-message="startDateGreaterThenEndDate">
+                                            <div ng-show="ReservationDialogFrom.newReservationEndDate.$error.startDateGreaterThenEndDate" ng-message="startDateGreaterThenEndDate">
                                                 End date is lower than Start date.
+                                            </div>
+                                            <div ng-show="ReservationDialogFrom.newReservationEndDate.$error.startDateSameAsEndDate" ng-message="startDateSameAsEndDate">
+                                                End date is same as Start date.
                                             </div>
                                         </div>
                                     </md-input-container>
                                     <md-input-container>
-                                        <input mdc-datetime-picker date="false" time="true" type="text" short-time="true" show-todays-date placeholder="Time"
-                                               format="hh:mm a" ng-model="viewModel.newReservation.endDate"/>
+                                        <input mdc-datetime-picker date="false" time="true" type="text" short-time="true" show-todays-date placeholder="Time" ng-change="actions.validateReservation(ReservationDialogFrom)"
+                                               name="newReservationEndTime" format="hh:mm a" ng-model="viewModel.workingReservation.endDate" required/>
                                     </md-input-container>
                                 </div>
                             </ng-form>
                         </div>
                 </md-dialog-content>
                 <md-dialog-actions layout="row">
-                    <md-button class="md-primary" ng-click="actions.createNewReservation()" ng-disabled="newReservationDialogFrom.$invalid">
-                        Create
+                    <md-button class="md-primary" ng-click="viewModel.workingReservationDialog.saveAction()" ng-disabled="ReservationDialogFrom.$invalid">
+                        Save
                     </md-button>
-                    <md-button ng-click="actions.cancelNewReservation()">
+                    <md-button ng-click="actions.cancelReservationDialog()">
                         Cancel
                     </md-button>
                 </md-dialog-actions>

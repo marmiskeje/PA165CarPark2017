@@ -111,7 +111,7 @@
                 }
                 $scope.viewModel.selectedEvent = null;
                 $scope.$digest();
-                $scope.actions.showNewReservationDialog(null, new Date(start), new Date(end), resource.source);
+                $scope.actions.showReservationDialog(null, null, new Date(start), new Date(end), resource.source);
                 console.log('select', start.format(), end.format(), resource ? resource.id : '(no resource)' );
             },
             unselect: function (jsEvent, view) {
@@ -155,18 +155,46 @@
             });
         }
     };
-    $scope.actions.showNewReservationDialog = function (ev, startDate, endDate, car) {
-        $scope.viewModel.newReservation = new Web.ViewModels.ReservationViewModel();
+    $scope.actions.showReservationDialog = function (selectedEvent, ev, startDate, endDate, car) {
+        $scope.viewModel.workingReservationDialog.title = 'Create new reservation';
+        $scope.viewModel.workingReservationDialog.saveAction = $scope.actions.createNewReservation;
+        $scope.viewModel.workingReservation = new Web.ViewModels.ReservationViewModel();
+        if (selectedEvent){ // update
+            var calendarCars = $scope.calendarElement.fullCalendar('getResources'); // combobox needs calendar car (otherwise autoselection is not working)
+            var carToUse = null;
+            for (var i=0; i < calendarCars.length; i++){
+                var c = calendarCars[i];
+                if (c.id === String(selectedEvent.car.id)){
+                    carToUse = c.source;
+                    break;
+                }
+            }
+            $scope.viewModel.workingReservation.startDate = new Date(selectedEvent.start);
+            $scope.viewModel.workingReservation.endDate = new Date(selectedEvent.end);
+            $scope.viewModel.workingReservation.car = carToUse;
+            $scope.viewModel.workingReservation.user = selectedEvent.user;
+            $scope.viewModel.workingReservationDialog.title = 'Edit reservation';
+            $scope.viewModel.workingReservationDialog.saveAction = $scope.actions.updateReservation;
+            $scope.viewModel.workingReservation.id = selectedEvent.id;
+            $scope.viewModel.workingReservation.state = selectedEvent.state;
+        } else { // create
+            $scope.viewModel.workingReservation.startDate = null;   
+            $scope.viewModel.workingReservation.endDate = null; 
+            $scope.viewModel.workingReservation.car = null;
+            $scope.viewModel.workingReservation.user = null;
+            $scope.viewModel.workingReservation.id = null;
+            $scope.viewModel.workingReservation.state = null;
+        }
         if (typeof startDate !== "undefined") {
-            $scope.viewModel.newReservation.startDate = startDate;
+            $scope.viewModel.workingReservation.startDate = startDate;
         }
         if (typeof endDate !== "undefined") {
-            $scope.viewModel.newReservation.endDate = endDate;
+            $scope.viewModel.workingReservation.endDate = endDate;
         }
         if (typeof car !== "undefined") {
-            $scope.viewModel.newReservation.car = car;
+            $scope.viewModel.workingReservation.car = car;
         }
-        $scope.actions.validateNewReservation($scope.newReservationDialogFrom);
+        $scope.actions.validateReservation($scope.ReservationDialogFrom);
         $mdDialog.show({
             contentElement: '#newReservationDialog',
             parent: angular.element(document.body),
@@ -177,10 +205,10 @@
     $scope.actions.createNewReservation = function () {
         reservationsService.createReservation(
                 {
-                    car: { id: $scope.viewModel.newReservation.car.id },
+                    car: { id: $scope.viewModel.workingReservation.car.id },
                     user: { id: sessionManager.currentSession.userId },
-                    reservationStartDate: new Date($scope.viewModel.newReservation.startDate.toUTCString()),
-                    reservationEndDate: new Date($scope.viewModel.newReservation.endDate.toUTCString())
+                    reservationStartDate: new Date($scope.viewModel.workingReservation.startDate.toUTCString()),
+                    reservationEndDate: new Date($scope.viewModel.workingReservation.endDate.toUTCString())
                 }, function(isSuccess, errors){
                     if (isSuccess){
                         notificationsService.showSimple("RESERVATIONS.NEW_CREATED");
@@ -193,27 +221,84 @@
                 });
         $mdDialog.cancel();
     }
-    $scope.actions.cancelNewReservation = function () {
+    $scope.actions.updateReservation = function () {
+        reservationsService.updateReservation(
+                {
+                    id: $scope.viewModel.workingReservation.id,
+                    car: { id: $scope.viewModel.workingReservation.car.id },
+                    user: { id: $scope.viewModel.workingReservation.user.id },
+                    reservationStartDate: new Date($scope.viewModel.workingReservation.startDate.toUTCString()),
+                    reservationEndDate: new Date($scope.viewModel.workingReservation.endDate.toUTCString()),
+                    state: $scope.viewModel.workingReservation.state
+                }, function(isSuccess, errors){
+                    if (isSuccess){
+                        notificationsService.showSimple("RESERVATIONS.NEW_CREATED");
+                        $scope.calendarElement.fullCalendar('refetchEvents');
+                    } else {
+                        notificationsService.showSimple(contractConverter.convertReservationErrors(errors));
+                    }
+                },function(errors){
+                    notificationsService.showSimple(contractConverter.convertReservationErrors(errors));
+                });
         $mdDialog.cancel();
     }
-    $scope.actions.validateNewReservation = function(form){
-        if ($scope.viewModel.newReservation.startDate){
+    $scope.actions.cancelReservationDialog = function () {
+        $mdDialog.cancel();
+    }
+    $scope.actions.validateReservation = function(form){
+        if ($scope.viewModel.workingReservation.startDate){
+            form.newReservationStartTime.$setValidity('required', true);
             form.newReservationStartDate.$setValidity('required', true);
-            form.newReservationStartDate.$setValidity('startDateGreaterThenEndDate', $scope.viewModel.newReservation.startDate <= $scope.viewModel.newReservation.endDate);
-            form.newReservationStartDate.$setPristine();
         } else {
+            form.newReservationStartTime.$setValidity('required', false);
             form.newReservationStartDate.$setValidity('required', false);
         }
-        if ($scope.viewModel.newReservation.endDate){
+        if ($scope.viewModel.workingReservation.endDate){
+            form.newReservationEndTime.$setValidity('required', true);
             form.newReservationEndDate.$setValidity('required', true);
-            form.newReservationEndDate.$setValidity('startDateGreaterThenEndDate', $scope.viewModel.newReservation.startDate <= $scope.viewModel.newReservation.endDate);
         } else {
+            form.newReservationEndTime.$setValidity('required', false);
             form.newReservationEndDate.$setValidity('required', false);
         }
-        if ($scope.viewModel.newReservation.car){
+        if ($scope.viewModel.workingReservation.startDate && $scope.viewModel.workingReservation.endDate) {
+            form.newReservationStartTime.$setValidity('startDateGreaterThenEndDate', $scope.viewModel.workingReservation.startDate <= $scope.viewModel.workingReservation.endDate);
+            form.newReservationStartDate.$setValidity('startDateGreaterThenEndDate', $scope.viewModel.workingReservation.startDate <= $scope.viewModel.workingReservation.endDate);
+            form.newReservationEndTime.$setValidity('startDateGreaterThenEndDate', $scope.viewModel.workingReservation.startDate <= $scope.viewModel.workingReservation.endDate);
+            form.newReservationEndDate.$setValidity('startDateGreaterThenEndDate', $scope.viewModel.workingReservation.startDate <= $scope.viewModel.workingReservation.endDate);
+            form.newReservationEndTime.$setValidity('startDateSameAsEndDate', +$scope.viewModel.workingReservation.startDate !== +$scope.viewModel.workingReservation.endDate);
+            form.newReservationEndDate.$setValidity('startDateSameAsEndDate', +$scope.viewModel.workingReservation.startDate !== +$scope.viewModel.workingReservation.endDate);
+        }
+        if ($scope.viewModel.workingReservation.car){
             form.newReservationCar.$setValidity('required', true);
         }else {
             form.newReservationCar.$setValidity('required', false);
+        }
+    }
+    $scope.actions.updateSelectedReservationState = function(state){
+        if ($scope.viewModel.selectedEvent != null) {
+            var selectedEvent = $scope.viewModel.selectedEvent;
+            reservationsService.updateReservation(
+                {
+                    id: selectedEvent.id,
+                    car: { id: selectedEvent.car.id },
+                    user: { id: selectedEvent.user.id },
+                    reservationStartDate: new Date(new Date(selectedEvent.start).toUTCString()),
+                    reservationEndDate: new Date(new Date(selectedEvent.end).toUTCString()),
+                    state: state
+                }, function(isSuccess, errors){
+                    if (isSuccess){
+                        var message = "RESERVATIONS.UPDATED";
+                        if (state === 'APPROVED' || state === 'DENIED'){
+                            message = "RESERVATIONS." + state;
+                        }
+                        notificationsService.showSimple(message);
+                        $scope.calendarElement.fullCalendar('refetchEvents');
+                    } else {
+                        notificationsService.showSimple(contractConverter.convertReservationErrors(errors));
+                    }
+                },function(errors){
+                    notificationsService.showSimple(contractConverter.convertReservationErrors(errors));
+                });
         }
     }
 
@@ -223,7 +308,10 @@
     $scope.viewModel.cars = [];
     $scope.viewModel.reservations = [];
     $scope.viewModel.selectedEvent = null;
-    $scope.viewModel.newReservation = null;
+    $scope.viewModel.workingReservation = null;
+    $scope.viewModel.workingReservationDialog = new Object();
+    $scope.viewModel.workingReservationDialog.title = null;
+    $scope.viewModel.workingReservationDialog.saveAction = null;
     initCalendar();
 }
 
