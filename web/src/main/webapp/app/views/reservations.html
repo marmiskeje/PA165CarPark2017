@@ -22,6 +22,10 @@
                 <ul class="nav navbar-nav">
                     <li ng-click="actions.deleteSelectedReservation()">Delete reservation</li>
                 </ul>
+                <ul ng-show="viewModel.selectedEvent.state !== 'APPROVED' && (services.sessionManager.currentSession.userType == 'ADMIN' || services.sessionManager.currentSession.userType == 'BRANCH_MANAGER')" class="nav navbar-nav">
+                    <li ng-click="actions.updateSelectedReservationState('APPROVED')">Approve reservation</li>
+                    <li ng-click="actions.updateSelectedReservationState('DENIED')">Deny reservation</li>
+                </ul>
             </div>
         </div>
     </div>

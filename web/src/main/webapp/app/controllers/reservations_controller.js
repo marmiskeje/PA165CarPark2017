@@ -216,6 +216,33 @@
             form.newReservationCar.$setValidity('required', false);
         }
     }
+    $scope.actions.updateSelectedReservationState = function(state){
+        if ($scope.viewModel.selectedEvent != null) {
+            var selectedEvent = $scope.viewModel.selectedEvent;
+            reservationsService.updateReservation(
+                {
+                    id: selectedEvent.id,
+                    car: { id: selectedEvent.car.id },
+                    user: { id: selectedEvent.user.id },
+                    reservationStartDate: new Date(new Date(selectedEvent.start).toUTCString()),
+                    reservationEndDate: new Date(new Date(selectedEvent.end).toUTCString()),
+                    state: state
+                }, function(isSuccess, errors){
+                    if (isSuccess){
+                        var message = "RESERVATIONS.UPDATED";
+                        if (state === 'APPROVED' || state === 'DENIED'){
+                            message = "RESERVATIONS." + state;
+                        }
+                        notificationsService.showSimple(message);
+                        $scope.calendarElement.fullCalendar('refetchEvents');
+                    } else {
+                        notificationsService.showSimple(contractConverter.convertReservationErrors(errors));
+                    }
+                },function(errors){
+                    notificationsService.showSimple(contractConverter.convertReservationErrors(errors));
+                });
+        }
+    }
 
     $rootScope.pageSubtitle = "RESERVATIONS.PAGE_SUBTITLE";
     $scope.calendarElement = $('#reservations_calendar');
