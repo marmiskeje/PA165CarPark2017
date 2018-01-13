@@ -89,12 +89,12 @@ public class CarController {
     }
 
     @RequestMapping(value = ApiDefinition.Car.ID, method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public final void deleteCar(@PathVariable(ApiDefinition.Car.PATH_ID) long id){
+    public final CarOperationResult deleteCar(@PathVariable(ApiDefinition.Car.PATH_ID) long id){
         LOG.debug("REST delete car with id: ", id);
         CarDTO result = carFacade.findCarById(id);
         if (result != null) {
             result.setDeactivated(true);
-            carFacade.updateCar(result);
+            return carFacade.updateCar(result);
         } else {
             throw new ResourceNotFound();
         }
