@@ -158,8 +158,9 @@ Web.Controllers.BranchesController = function ($rootScope, $scope, $http, $mdDia
                             $scope.viewModel.selectedItem = branchToUpdate;
                         }   
                     });
+                    notificationsService.showSimple("BRANCHES.ASSIGN_USER_SUCCESS");
                 } else {
-                    notificationsService.showSimple("BRANCHES.UNKNOWN_ERROR");
+                    notificationsService.showSimple("BRANCHES.ASSIGN_USER_FAIL");
                 }
             } else {
                 notificationsService.showSimple("BRANCHES.UNKNOWN_ERROR");
@@ -189,8 +190,9 @@ Web.Controllers.BranchesController = function ($rootScope, $scope, $http, $mdDia
                             $scope.viewModel.selectedItem = branchToUpdate;
                         }   
                     });
+                    notificationsService.showSimple("BRANCHES.ASSIGN_CAR_SUCCESS");
                 } else {
-                    notificationsService.showSimple("BRANCHES.UNKNOWN_ERROR");
+                    notificationsService.showSimple("BRANCHES.ASSIGN_CAR_FAIL");
                 }
             } else {
                 notificationsService.showSimple("BRANCHES.UNKNOWN_ERROR");
@@ -226,6 +228,7 @@ Web.Controllers.BranchesController = function ($rootScope, $scope, $http, $mdDia
                     $scope.viewModel.branches.push(newBranchModel);
                     $scope.viewModel.selectedItem = branches[branches.length - 1];
                     data.data.manager = managerToSet;
+                    notificationsService.showSimple("BRANCHES.CREATE_SUCCESS");
                 } else {
                     notificationsService.showSimple("BRANCHES.UNKNOWN_ERROR");
                 }
@@ -272,6 +275,7 @@ Web.Controllers.BranchesController = function ($rootScope, $scope, $http, $mdDia
                         $scope.viewModel.selectedItem = branch;
                         }   
                     });
+                    notificationsService.showSimple("BRANCHES.UPDATE_SUCCESS");
                 } else {
                     notificationsService.showSimple("BRANCHES.UNKNOWN_ERROR");
                 }

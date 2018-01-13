@@ -12,12 +12,27 @@
     "DELETE_FAIL": "An unknown error ocurred.",
     "NEW_CREATED": "New car was sucessfully created.",
     "UNKNOWN_ERROR": "An unknown error occured.",
+    "UNKNOWN_SERVER_ERROR": "A server error occured. Try later.",
     "EDIT_SUCCESS": "Car was successfully edited."
 
   },
   "BRANCHES": {
-    "PAGE_SUBTITLE": "Branches management"
+    "PAGE_SUBTITLE": "Branches management",
+    "ASSIGN_USER_SUCCESS": "User was successfully assigned",
+    "ASSIGN_USER_FAIL": "Car was successfully assigned",
+    "ASSIGN_CAR_SUCCESS": "Car was successfully assigned",
+    "ASSIGN_CAR_FAIL": "Car was not successfully assigned",
+    "CREATE_SUCCESS": "Branch was successfully created",
+    "UPDATE_SUCCESS": "Branch was successfully deleted",
+    "UNKNOWN_SERVER_ERROR": "A server error occured. Try later.",
+    "UNKNOWN_ERROR": "An unknown error occured."
   },
+  
+  "USER": {
+    "UNKNOWN_ERROR": "An unknown error occured.",
+    "UNKNOWN_SERVER_ERROR": "A server error occured. Try later.",
+  },
+
   "LOGIN": {
     "PAGE_SUBTITLE": "Login",
     "USERNAME": "Username:",
