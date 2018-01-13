@@ -1,10 +1,13 @@
 package cz.muni.fi.pa165.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * DTO for auth user
  */
 public class UserAuthDTO {
 
+    @JsonProperty("username")
     private String userName;
 
     private String password;

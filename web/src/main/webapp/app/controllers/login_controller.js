@@ -4,7 +4,7 @@
     $scope.actions = new Object();
     $scope.actions.login = function () {
         var request = new Web.Data.AuthRequest();
-        request.userName = $scope.viewModel.username;
+        request.username = $scope.viewModel.username;
         request.password = $scope.viewModel.password;
         $scope.viewModel.infoMessage = "";
         authService.login(request, function (httpResponse) {
@@ -14,8 +14,8 @@
                 if (response.data.isSuccess && response.data.token != null && data != null) {
                     var sessionInfo = new Web.ViewModels.SessionInfoViewModel();
                     sessionInfo.userId = data.id;
-                    sessionInfo.username = request.userName;
-                    sessionInfo.userType = data.type;
+                    sessionInfo.username = request.username;
+                    sessionInfo.userType = data.userType;
                     if(data.regionalBranch != null){
                         sessionInfo.branchName = data.regionalBranch.name;
                         sessionInfo.branchId = data.regionalBranch.id;

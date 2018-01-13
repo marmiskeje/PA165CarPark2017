@@ -232,7 +232,7 @@
                     state: $scope.viewModel.workingReservation.state
                 }, function(isSuccess, errors){
                     if (isSuccess){
-                        notificationsService.showSimple("RESERVATIONS.NEW_CREATED");
+                        notificationsService.showSimple("RESERVATIONS.UPDATE_SUCCESS");
                         $scope.calendarElement.fullCalendar('refetchEvents');
                     } else {
                         notificationsService.showSimple(contractConverter.convertReservationErrors(errors));

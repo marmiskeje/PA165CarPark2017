@@ -23,14 +23,14 @@
     "ASSIGN_CAR_SUCCESS": "Car was successfully assigned",
     "ASSIGN_CAR_FAIL": "Car was not successfully assigned",
     "CREATE_SUCCESS": "Branch was successfully created",
-    "UPDATE_SUCCESS": "Branch was successfully deleted",
+    "UPDATE_SUCCESS": "Branch was successfully updated",
     "UNKNOWN_SERVER_ERROR": "A server error occured. Try later.",
     "UNKNOWN_ERROR": "An unknown error occured."
   },
-  
+
   "USER": {
     "UNKNOWN_ERROR": "An unknown error occured.",
-    "UNKNOWN_SERVER_ERROR": "A server error occured. Try later.",
+    "UNKNOWN_SERVER_ERROR": "A server error occured. Try later."
   },
 
   "LOGIN": {
@@ -58,6 +58,7 @@
     "CAR_NOT_AVAILABLE": "Car is not available.",
     "DATABASE_ERROR": "An unknown database error occured.",
     "NEW_CREATED": "New reservation was sucessfully created.",
+    "UPDATE_SUCCESS": "Reservation was successfully updated",
     "END_DATE_BEFORE_START_DATE": "End date is set before start date",
     "RESERVATION_IN_THE_PAST": "It is not allowed to add reservation to the past",
     "UNKNOWN_SERVER_ERROR": "A server error occured. Try later.",
