@@ -119,7 +119,6 @@ public class User {
 
         User user = (User) o;
 
-        if (getId() != user.getId()) return false;
         if (getUserName() != null ? !getUserName().equals(user.getUserName()) : user.getUserName() != null)
             return false;
         if (getPassword() != null ? !getPassword().equals(user.getPassword()) : user.getPassword() != null)

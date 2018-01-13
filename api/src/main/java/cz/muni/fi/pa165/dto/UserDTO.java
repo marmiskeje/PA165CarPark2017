@@ -1,5 +1,6 @@
 package cz.muni.fi.pa165.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import cz.muni.fi.pa165.dto.enums.UserType;
 
 import java.time.LocalDateTime;
@@ -7,7 +8,9 @@ import java.time.LocalDateTime;
 public class UserDTO {
 
     private long id;
+    @JsonProperty("username")
     private String userName;
+    @JsonProperty("userType")
     private UserType type;
     private LocalDateTime creationDate;
     private LocalDateTime activationDate;
@@ -69,19 +72,18 @@ public class UserDTO {
     public void setRegionalBranch(RegionalBranchDTO regionalBranch) {
         this.regionalBranch = regionalBranch;
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null) return false;
         if (!(o instanceof UserDTO)) return false;
 
-        UserDTO userDTO  = (UserDTO) o;
+        UserDTO user = (UserDTO) o;
 
-        if (getId() != userDTO.getId()) return false;
-        if (getUserName() != null ? !getUserName().equals(userDTO .getUserName()) : userDTO .getUserName() != null)
+        if (getUserName() != null ? !getUserName().equals(user.getUserName()) : user.getUserName() != null)
             return false;
-        return getType() == userDTO .getType();
+        return getType() == user.getType();
     }
 
     @Override

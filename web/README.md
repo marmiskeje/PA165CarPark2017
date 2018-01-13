@@ -65,8 +65,8 @@ data: {
              },
              "user" : {
              	"id": 1,
-                 "userName": "Mato",
-                 "type": "BRANCH_MANAGER"
+                 "username": "Mato",
+                 "userType": "BRANCH_MANAGER"
              },
              "reservationStartDate" : "2017-12-17T21:25:47.277",
              "reservationEndDate" : "2016-11-17T21:25:47.277",
@@ -85,8 +85,8 @@ data: {
            },
            "user" : {
             "id": 1,
-               "userName": "Mato",
-               "type": "BRANCH_MANAGER"
+               "username": "Mato",
+               "userType": "BRANCH_MANAGER"
            },
            "reservationStartDate" : "2017-12-17T21:25:47.277",
            "reservationEndDate" : "2016-11-17T21:25:47.277",
@@ -163,7 +163,7 @@ data: { "id" : 3, "name" : "testBranch2"}
 Assign user 
 ```
 curl -X PUT -i -H "Content-Type: application/json" --data ' http://localhost:8080/pa165/rest/branch/3/assignUser
-data: { "id": 1, "userName": "Mato" }
+data: { "id": 1, "username": "Mato" }
 ```
 Assign car 
 ```
@@ -186,7 +186,7 @@ Authentification user:
 ```
 curl -X POST http://localhost:8080/pa165/rest/user/authenticate
 data: { 
-"userName" : "admin",
+"username" : "admin",
 "password" : "admin" 
 }
 ```

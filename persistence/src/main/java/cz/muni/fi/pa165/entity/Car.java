@@ -98,7 +98,6 @@ public class Car {
 
         Car car = (Car) o;
 
-        if (getId() != car.getId()) return false;
         if (getName() != null ? !getName().equals(car.getName()) : car.getName() != null) return false;
         return getCreationDate() != null ? getCreationDate().equals(car.getCreationDate()) : car.getCreationDate() == null;
     }
