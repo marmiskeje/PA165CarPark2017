@@ -79,6 +79,7 @@ public class CarDTO {
 
         CarDTO car = (CarDTO) o;
 
+        if (getId() != car.getId()) return false;
         if (getName() != null ? !getName().equals(car.getName()) : car.getName() != null) return false;
         return getCreationDate() != null ? getCreationDate().equals(car.getCreationDate()) : car.getCreationDate() == null;
     }

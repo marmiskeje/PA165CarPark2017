@@ -143,15 +143,18 @@ Web.Controllers.BranchesController = function ($rootScope, $scope, $http, $mdDia
     $scope.actions.assignUser = function () {
         var branchToUpdate = $scope.viewModel.selectedItem;
         var userToBeAssigned = $scope.viewModel.userToAssign;
-        var request = {id: $scope.viewModel.selectedItem.id, user: $scope.viewModel.userToAssign};
-        branchesService.assignUser(request, function (httpResponse) {
+        $scope.viewModel.selectedItem.employees.push(userToBeAssigned);
+        var newEmployees = $scope.viewModel.selectedItem.employees;
+        var request = {id: $scope.viewModel.selectedItem.id, name: $scope.viewModel.selectedItem.name, 
+            cars: $scope.viewModel.selectedItem.cars, employees: $scope.viewModel.selectedItem.employees};
+        branchesService.updateBranch(request, function (httpResponse) {
             var response = httpResponse.data;
             if (response !== null) {
                 var data = response.data;
                 if (response.isSuccess && data !== null) {
                     angular.forEach($scope.viewModel.branches, function(branch){
                         if (branch.id === $scope.viewModel.selectedItem.id) {
-                            branch.employees.push(userToBeAssigned);
+                            branch = $scope.viewModel.selectedItem;
                             $scope.viewModel.selectedItem = branchToUpdate;
                         }   
                     });
@@ -171,15 +174,18 @@ Web.Controllers.BranchesController = function ($rootScope, $scope, $http, $mdDia
     $scope.actions.assignCar = function () {
         var branchToUpdate = $scope.viewModel.selectedItem;
         var carToBeAssigned = $scope.viewModel.carToAssign;
-        var request = {id: $scope.viewModel.selectedItem.id, car: carToBeAssigned};
-        branchesService.assignCar(request, function (httpResponse) {
+        $scope.viewModel.selectedItem.cars.push(carToBeAssigned);
+        var newCars = $scope.viewModel.selectedItem.cars;
+        var request = {id: $scope.viewModel.selectedItem.id, name: $scope.viewModel.selectedItem.name, 
+            cars: $scope.viewModel.selectedItem.cars, employees: $scope.viewModel.selectedItem.employees};
+        branchesService.updateBranch(request, function (httpResponse) {
             var response = httpResponse.data;
             if (response !== null) {
                 var data = response.data;
                 if (response.isSuccess && data !== null) {
                     angular.forEach($scope.viewModel.branches, function(branch){
                         if (branch.id === $scope.viewModel.selectedItem.id) {
-                            branch.cars.push(carToBeAssigned);
+                            branch = $scope.viewModel.selectedItem;
                             $scope.viewModel.selectedItem = branchToUpdate;
                         }   
                     });
@@ -205,13 +211,19 @@ Web.Controllers.BranchesController = function ($rootScope, $scope, $http, $mdDia
             if (car.selected) selectedCars.push(car);
         })
         
-        var request = {id: $scope.viewModel.addBranch.id, name: $scope.viewModel.addBranch.name, cars: selectedCars, employees: employees};
+        var request = {name: $scope.viewModel.addBranch.name, cars: selectedCars, employees: employees};
+        var newBranchModel = new Web.ViewModels.BranchesViewModel();
+        newBranchModel.name = request.name;
+        newBranchModel.cars = request.cars;
+        newBranchModel.employees = request.employees;
         branchesService.createBranch(request, function (httpResponse) {
             var response = httpResponse.data;
             if (response !== null) {
                 var data = response.data;
                 if (response.isSuccess && data !== null) {
-                    $scope.viewModel.branches.push(data.data);
+                    newBranchModel.id = data.data.id;
+                    newBranchModel.manager = newBranchModel.employees[0];
+                    $scope.viewModel.branches.push(newBranchModel);
                     $scope.viewModel.selectedItem = branches[branches.length - 1];
                     data.data.manager = managerToSet;
                 } else {
@@ -308,6 +320,13 @@ Web.Controllers.BranchesController = function ($rootScope, $scope, $http, $mdDia
             angular.forEach(item.cars, function(itemCar){
                 if (car.id === itemCar.id) 
                     car.selected = true;
+            })
+        })
+        angular.forEach($scope.viewModel.users, function(user){
+            user.selected = false;
+            angular.forEach(item.employees, function(itemEm){
+                if (user.id === itemEm.id) 
+                    user.selected = true;
             })
         })
         angular.forEach(item.employees, function(employee){

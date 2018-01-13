@@ -174,7 +174,7 @@
                                         <div layout-gt-sm="row">
                                             <label>User</label>
                                             <md-select id="cars" ng-model="viewModel.userToAssign" required ng-selected="viewModel.userToAssign">
-                                                <md-option ng-repeat="user in viewModel.users" ng-value="user" >
+                                                <md-option ng-repeat="user in viewModel.users" ng-value="user" ng-disabled="user.selected">
                                                     {{user.name}}
                                                 </md-option>
                                             </md-select>
