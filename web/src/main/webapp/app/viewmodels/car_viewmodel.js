@@ -1,6 +1,7 @@
 ﻿Web.ViewModels.CarViewModel = function () {
     this.id = null;
     this.name = null;
+    this.regionalBranch = null;
 
     this.convertToResource = function () {
         result = {};

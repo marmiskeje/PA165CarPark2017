@@ -51,7 +51,10 @@
     };
 
     $scope.actions.addCar = function () {
-        carsService.createCar($scope.viewModel.addCar
+    	var requestCar = $scope.viewModel.addCar;
+    	requestCar.regionalBranch = new Web.ViewModels.BranchesViewModel();
+    	requestCar.regionalBranch.id = sessionManager.currentSession.branchId;
+        carsService.createCar(requestCar
             , function(isSuccess, errors){
                 if (isSuccess){
                     notificationsService.showSimple("CARS.NEW_CREATED");
