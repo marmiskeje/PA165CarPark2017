@@ -1,7 +1,9 @@
 package cz.muni.fi.pa165.service;
 
 import cz.muni.fi.pa165.dao.CarDAO;
+import cz.muni.fi.pa165.dao.RegionalBranchDAO;
 import cz.muni.fi.pa165.entity.Car;
+import cz.muni.fi.pa165.entity.RegionalBranch;
 import cz.muni.fi.pa165.service.enums.CarOperationErrorCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +22,10 @@ public class CarServiceImpl implements CarService{
 
     @Inject
     private CarDAO carDAO;
-
+    
+    @Inject
+    private RegionalBranchDAO regionalBranchDao;
+    
     @Inject
     private TimeService timeService;
 
@@ -35,6 +40,12 @@ public class CarServiceImpl implements CarService{
         car.setActivationDate(timeService.getCurrentTime());
         car.setCreationDate(timeService.getCurrentTime());
         car.setModificationDate(timeService.getCurrentTime());
+        if(car.getRegionalBranch()!=null) {
+        	RegionalBranch foundedBranch = regionalBranchDao.findOne(car.getRegionalBranch().getId());
+        	if(foundedBranch!=null) {
+            	car.setRegionalBranch(foundedBranch);
+        	}
+        }
         try{
             carDAO.save(car);
         }catch (DataAccessException ex) {

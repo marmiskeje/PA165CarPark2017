@@ -46,9 +46,17 @@ public class CarController {
         }
         if(result == null) {
             result = Collections.emptyList();
+            return result;
         }
         if(branchId>=0){
-            return result.stream().filter(x -> x.getRegionalBranch().getId()==branchId).collect(Collectors.toList());
+            return result.stream().filter(x -> {
+            	if(x.getRegionalBranch()==null) {
+            		return false;
+            	}else {
+                	return x.getRegionalBranch().getId()==branchId;
+            	}
+            	})
+            		.collect(Collectors.toList());
         }else{
             return result;
         }
